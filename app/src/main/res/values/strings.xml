@@ -2,4 +2,8 @@
     <string name="app_name">CalendarApp</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="first_fragment_description">We\'ll let you know when your alarm is going to make you miss a calendar event</string>
+    <string name="sync_calendar_button_text"><font size="20">Sync your calendar</font>\n\<font size="10"> to Get Started</font></string>
+    <string name="choose_default_calendar_button_text"><font size="20">Choose your default</font>\n\<font size="10"> Calendar App</font></string>
 </resources>
