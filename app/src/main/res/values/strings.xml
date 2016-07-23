@@ -46,4 +46,9 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
+    <string name="timePlaceholder">07:46</string>
+    <string name="am">AM</string>
+    <string name="m">M</string>
+    <string name="mmDD">MM/DD</string>
+    <string name="hhMM">HH:MM AM</string>
 </resources>
