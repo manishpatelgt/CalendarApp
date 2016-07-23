@@ -7,11 +7,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import me.vucko.calendarapp.domain.database.DBHandler;
+import me.vucko.calendarapp.domain.entity.Calendar;
 import me.vucko.calendarapp.fragments.FirstFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DBHandler db = new DBHandler(this);
+        db.addCalendar(new Calendar(12345, "blabla"));
+        Log.i("added to database", "added");
+        Log.i("sveee", db.getAllCalendars().toString());
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

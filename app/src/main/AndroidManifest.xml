@@ -2,22 +2,73 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.vucko.calendarapp">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--<activity-->
+            <!--android:name=".MainActivity"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:theme="@style/AppTheme.NoActionBar">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name="me.vucko.calendarapp.alarm.AlarmActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="me.vucko.calendarapp.alarm.AlarmActivity" >
+            <!-- Parent activity meta-data to support API level 7+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.vucko.calendarapp.alarm.AlarmActivity" />
+        </activity>
+
+        <service
+            android:process="za.co.neilson.alarm.serviceProcess"
+            android:name="me.vucko.calendarapp.alarm.service.AlarmService"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            >
+        </service>
+        <receiver android:name="me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name = "me.vucko.calendarapp.alarm.alert.AlarmAlertActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <receiver android:name="me.vucko.calendarapp.alarm.alert.AlarmAlertBroadcastReciever" >
+        </receiver>
+        <receiver android:name = "me.vucko.calendarapp.alarm.telephony.PhoneStateChangedBroadcastReciever">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
