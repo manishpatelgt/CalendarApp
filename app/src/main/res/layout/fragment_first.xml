@@ -5,51 +5,32 @@
     android:orientation="vertical"
     tools:context="me.vucko.calendarapp.fragments.FirstFragment">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <TextView
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/first_fragment_description"
-            android:layout_centerInParent="true"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
-
+            android:text="SET"/>
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/sync_calendar_button_text"
-            android:textAllCaps="false"
-            android:layout_centerInParent="true"
-            android:background="@drawable/custom_rounded_button"
-            android:layout_margin="50dp"/>
-    </RelativeLayout>
-    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MORE SETTINGS"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/alarms_listview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_height="wrap_content"
+        android:longClickable="true" >
+    </ListView>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/choose_default_calendar_button_text"
-            android:textAllCaps="false"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/custom_rounded_button"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="80dp"
-            />
-    </RelativeLayout>
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/no_alarms" />
 
 </LinearLayout>

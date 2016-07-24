@@ -8,17 +8,11 @@
         android:orientation="horizontal"
         android:padding="@dimen/activity_horizontal_margin">
         <TextView
+            android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/timePlaceholder"
             android:textSize="@dimen/alarm_list_text_size"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/am"
-            android:textSize="@dimen/alarm_list_text_size"
-            android:layout_marginLeft="@dimen/appbar_padding_top"
-            android:layout_marginStart="@dimen/appbar_padding_top"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -59,6 +53,10 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_x_24px"/>
+            android:paddingTop="@dimen/appbar_padding_top"
+            android:paddingRight="@dimen/appbar_padding_top"
+            android:paddingEnd="@dimen/appbar_padding_top"
+            android:background="#00000000"
+            android:src="@drawable/custom_x_button"/>
     </RelativeLayout>
 </FrameLayout>

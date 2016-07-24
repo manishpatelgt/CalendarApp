@@ -1,5 +1,6 @@
 package me.vucko.calendarapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,11 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 import me.vucko.calendarapp.domain.database.DBHandler;
 import me.vucko.calendarapp.domain.entity.Calendar;
 import me.vucko.calendarapp.fragments.FirstFragment;
+import me.vucko.calendarapp.fragments.SecondFragment;
+import me.vucko.calendarapp.fragments.ThirdFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
@@ -93,12 +94,14 @@ public class MainActivity extends AppCompatActivity {
             if(position == 0){
                 return FirstFragment.newInstance();
             }
-            return PlaceholderFragment.newInstance(position + 1);
+            if(position == 1){
+                return SecondFragment.newInstance();
+            }
+            return ThirdFragment.newInstance();
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 3;
         }
 
@@ -108,11 +111,16 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return "ReSync";
                 case 1:
-                    return "SECTION 2";
+                    return "Calendar";
                 case 2:
-                    return "SECTION 3";
+                    return "Settings";
             }
             return null;
         }
+    }
+
+    public void callMathAlarmScheduleService() {
+        Intent mathAlarmServiceIntent = new Intent(this, AlarmServiceBroadcastReciever.class);
+        sendBroadcast(mathAlarmServiceIntent, null);
     }
 }

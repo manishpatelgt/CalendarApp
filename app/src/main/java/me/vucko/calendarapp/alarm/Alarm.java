@@ -11,20 +11,21 @@
  */
 package me.vucko.calendarapp.alarm;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
-import me.vucko.calendarapp.alarm.alert.AlarmAlertBroadcastReciever;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+
+import me.vucko.calendarapp.alarm.alert.AlarmAlertBroadcastReciever;
 
 public class Alarm implements Serializable {
 
@@ -184,7 +185,7 @@ public class Alarm implements Serializable {
 	}
 
 	/**
-	 * @param set
+	 * @param days
 	 *            the repeatDays to set
 	 */
 	public void setDays(Day[] days) {
@@ -198,8 +199,7 @@ public class Alarm implements Serializable {
 				contains = true;
 		if(!contains){
 			List<Day> result = new LinkedList<Day>();
-			for(Day d : getDays())
-				result.add(d);
+			Collections.addAll(result, getDays());
 			result.add(day);
 			setDays(result.toArray(new Day[result.size()]));
 		}

@@ -46,9 +46,17 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
-    <string name="timePlaceholder">07:46</string>
+    <string name="timePlaceholder">07:46 AM</string>
     <string name="am">AM</string>
     <string name="m">M</string>
     <string name="mmDD">MM/DD</string>
     <string name="hhMM">HH:MM AM</string>
+    <string name="notificationSettings">Notification Settings</string>
+    <string name="calendarSync">Calendar Sync</string>
+    <string name="contactUs">Contact Us</string>
+    <string name="help">Help</string>
+    <string name="review">Submit a Review</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_contact_us">ContactUsActivity</string>
 </resources>
