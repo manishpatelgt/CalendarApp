@@ -6,18 +6,50 @@
     tools:context="me.vucko.calendarapp.fragments.FirstFragment">
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TimePicker
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:timePickerMode="spinner"
+
+            android:layout_marginTop="-32dp"
+            android:layout_marginBottom="-32dp"/>
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_weight="0.8">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/setButton"
+                android:text="@string/set"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SET"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MORE SETTINGS"/>
+            android:id="@+id/moreSettingsButton"
+            android:text="@string/moreSettings"
+            />
+        </RelativeLayout>
     </LinearLayout>
     <ListView
         android:id="@+id/alarms_listview"

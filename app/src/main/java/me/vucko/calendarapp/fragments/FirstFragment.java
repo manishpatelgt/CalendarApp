@@ -4,6 +4,7 @@ package me.vucko.calendarapp.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.HapticFeedbackConstants;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import java.util.List;
 
 import me.vucko.calendarapp.AlarmsAdapter;
 import me.vucko.calendarapp.MainActivity;
+import me.vucko.calendarapp.MoreSettingsActivity;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
@@ -47,10 +50,25 @@ public class FirstFragment extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        updateAlarmList();
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
         ListView alarmListView = (ListView) view.findViewById(R.id.alarms_listview);
+        Button setButton = (Button) view.findViewById(R.id.setButton);
+        Button moreSettingsButton = (Button) view.findViewById(R.id.moreSettingsButton);
+        moreSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MoreSettingsActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
         alarmListView.setAdapter(alarmsAdapter);
         emptyTextView = (TextView) view.findViewById(android.R.id.empty);
         if(alarmsAdapter.getCount() > 0){

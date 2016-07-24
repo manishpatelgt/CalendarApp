@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "ReSync";
+                    return "Alarm";
                 case 1:
                     return "Calendar";
                 case 2:
