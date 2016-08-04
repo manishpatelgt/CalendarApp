@@ -47,6 +47,9 @@
     <string name="cancel">Cancel</string>
 
     <string name="timePlaceholder">07:46 AM</string>
+    <string name="someDatePlaceholder">Monday, July 18th</string>
+    <string name="eventNameTimePlaceholder">Event Name # HH:MM AM</string>
+    <string name="noAlarmsSet">No alarms set</string>
     <string name="am">AM</string>
     <string name="m">M</string>
     <string name="mmDD">MM/DD</string>
