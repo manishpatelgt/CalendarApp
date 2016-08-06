@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +27,7 @@ import me.vucko.calendarapp.MoreSettingsActivity;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 
 public class FirstFragment extends Fragment {
 
@@ -42,7 +44,7 @@ public class FirstFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        alarmsAdapter = new AlarmsAdapter(context, R.layout.custom_alarm_entry, new ArrayList<Alarm>());
+        alarmsAdapter = new AlarmsAdapter(context);
         Database.init(context);
         final List<Alarm> alarms = Database.getAll();
         alarmsAdapter.setAlarms(alarms);
@@ -59,8 +61,19 @@ public class FirstFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
-        ListView alarmListView = (ListView) view.findViewById(R.id.alarms_listview);
+        final TimePicker timePicker = (TimePicker) view.findViewById(R.id.timePicker);
         Button setButton = (Button) view.findViewById(R.id.setButton);
+        setButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Alarm alarm = new Alarm();
+                alarm.setAlarmTime(timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute());
+                Database.init(getActivity());
+                Database.create(alarm);
+                callAlarmScheduleService();
+                updateAlarmList();
+            }
+        });
         Button moreSettingsButton = (Button) view.findViewById(R.id.moreSettingsButton);
         moreSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,16 +82,25 @@ public class FirstFragment extends Fragment {
                 startActivityForResult(intent, 1);
             }
         });
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        ListView alarmListView = (ListView) getView().findViewById(R.id.alarms_listview);
+
         alarmListView.setAdapter(alarmsAdapter);
-        emptyTextView = (TextView) view.findViewById(android.R.id.empty);
+        emptyTextView = (TextView) getView().findViewById(android.R.id.empty);
         if(alarmsAdapter.getCount() > 0){
             emptyTextView.setVisibility(View.GONE);
         }
-        alarmListView.setClickable(true);
-        alarmListView.setLongClickable(true);
-        alarmListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+        alarmListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 final Alarm alarm = alarmsAdapter.getItem(position);
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -103,21 +125,18 @@ public class FirstFragment extends Fragment {
                 });
 
                 dialog.show();
-
-                return true;
             }
         });
-
-        return view;
     }
 
     public void updateAlarmList(){
-        Database.init(getActivity());
-        final List<Alarm> alarms = Database.getAll();
-        alarmsAdapter.setAlarms(alarms);
 
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
+                Database.init(getActivity());
+                List<Alarm> alarms = Database.getAll();
+                alarmsAdapter.setAlarms(alarms);
+
                 // reload content
                 alarmsAdapter.notifyDataSetChanged();
                 if (alarms.size() > 0) {
@@ -127,6 +146,11 @@ public class FirstFragment extends Fragment {
                 }
             }
         });
+    }
+
+    protected void callAlarmScheduleService() {
+        Intent AlarmServiceIntent = new Intent(getActivity(), AlarmServiceBroadcastReciever.class);
+        getActivity().sendBroadcast(AlarmServiceIntent, null);
     }
 
 }
