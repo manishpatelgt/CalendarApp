@@ -27,6 +27,7 @@ import me.vucko.calendarapp.MoreSettingsActivity;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 
 public class FirstFragment extends Fragment {
@@ -78,7 +79,7 @@ public class FirstFragment extends Fragment {
         moreSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MoreSettingsActivity.class);
+                Intent intent = new Intent(getActivity(), AlarmPreferencesActivity.class);
                 startActivityForResult(intent, 1);
             }
         });

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 
 public class AlarmsAdapter extends BaseAdapter {
@@ -50,7 +51,7 @@ public class AlarmsAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.custom_alarm_entry, parent, false);
         }
 
-        Alarm alarm = getItem(position);
+        final Alarm alarm = getItem(position);
         TextView timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
         String time = simpleDateFormat.format(alarm.getAlarmTime().getTime());
@@ -61,6 +62,8 @@ public class AlarmsAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 alarms.remove(position);
+                Database.init(context);
+                Database.deleteEntry(alarms.get(position));
                 callAlarmScheduleService();
                 notifyDataSetChanged();
             }

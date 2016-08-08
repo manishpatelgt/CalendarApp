@@ -50,7 +50,6 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 //
 //			@Override
 //			public void run() {
-				Log.d("AlarmPreferenceListAdapter", "Loading Ringtones...");
 				
 				RingtoneManager ringtoneMgr = new RingtoneManager(getContext());
 				
@@ -69,7 +68,6 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 						alarmTonePaths[alarmsCursor.getPosition()+1] = ringtoneMgr.getRingtoneUri(alarmsCursor.getPosition()).toString();
 					}while(alarmsCursor.moveToNext());					
 				}
-				Log.d("AlarmPreferenceListAdapter", "Finished Loading " + alarmTones.length + " Ringtones.");
 				alarmsCursor.close();
 //				
 //			}
