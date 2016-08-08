@@ -50,6 +50,12 @@
     <string name="someDatePlaceholder">Monday, July 18th</string>
     <string name="eventNameTimePlaceholder">Event Name # HH:MM AM</string>
     <string name="noAlarmsSet">No alarms set</string>
+    <string name="cancelFor">Cancel for…</string>
+    <string name="today">Today</string>
+    <string name="allDayOfWeeks">All (Day of week)s</string>
+    <string name="entireAlarm">Entire Alarm</string>
+    <string name="editEventAlarm">Edit Event Alarm</string>
+    <string name="thisDayOnly">(this day only)</string>
     <string name="am">AM</string>
     <string name="m">M</string>
     <string name="mmDD">MM/DD</string>
