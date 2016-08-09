@@ -6,4 +6,8 @@
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="alarm_list_text_size">50sp</dimen>
     <dimen name="day_list_text_size">35sp</dimen>
+    <dimen name="syncCalendarButtonMarginTop">70dp</dimen>
+    <dimen name="syncCalendarTextViewMarginTop">35dp</dimen>
+    <dimen name="syncCalendarButtonPadding">50dp</dimen>
+    <dimen name="syncCalendarButtonPaddingTop">40dp</dimen>
 </resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="me.vucko.calendarapp.SyncCalendarsActivity"
+    tools:showIn="@layout/activity_sync_calendars"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+    <Button
+        android:id="@+id/syncCalendarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/syncCalendars"
+        android:paddingLeft="@dimen/syncCalendarButtonPadding"
+        android:paddingRight="@dimen/syncCalendarButtonPadding"
+        android:paddingTop="@dimen/syncCalendarButtonPaddingTop"
+        android:paddingBottom="@dimen/syncCalendarButtonPaddingTop"
+        android:background="@drawable/custom_rounded_button"
+        android:layout_marginTop="@dimen/syncCalendarButtonMarginTop"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/availableCalendars"
+        android:textColor="#000000"
+        android:layout_marginTop="@dimen/syncCalendarTextViewMarginTop"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/googleCalendar"
+        android:textColor="#000000"
+        android:layout_marginTop="@dimen/syncCalendarTextViewMarginTop"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:drawableLeft="@android:drawable/arrow_down_float"
+        android:drawablePadding="@dimen/appbar_padding_top"/>
+
+</LinearLayout>

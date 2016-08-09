@@ -56,6 +56,9 @@
     <string name="entireAlarm">Entire Alarm</string>
     <string name="editEventAlarm">Edit Event Alarm</string>
     <string name="thisDayOnly">(this day only)</string>
+    <string name="syncCalendars">Sync Calendar(s)</string>
+    <string name="availableCalendars">Available Calendars</string>
+    <string name="googleCalendar">Google Calendar</string>
     <string name="am">AM</string>
     <string name="m">M</string>
     <string name="mmDD">MM/DD</string>
@@ -72,4 +75,5 @@
     <string name="title_activity_contact_us">ContactUsActivity</string>
     <string name="title_activity_more_settings">MoreSettingsActivity</string>
     <string name="title_activity_detailed_day">DetailedDayActivity</string>
+    <string name="title_activity_sync_calendars">SyncCalendarsActivity</string>
 </resources>

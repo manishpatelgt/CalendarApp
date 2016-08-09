@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import me.vucko.calendarapp.ContactUsActivity;
 import me.vucko.calendarapp.R;
+import me.vucko.calendarapp.SyncCalendarsActivity;
 
 
 public class ThirdFragment extends Fragment {
@@ -46,6 +47,13 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ContactUsActivity.class);
+                startActivity(intent);
+            }
+        });
+        calendarSyncButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SyncCalendarsActivity.class);
                 startActivity(intent);
             }
         });

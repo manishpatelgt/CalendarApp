@@ -17,14 +17,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import me.vucko.calendarapp.AlarmsAdapter;
 import me.vucko.calendarapp.MainActivity;
-import me.vucko.calendarapp.MoreSettingsActivity;
 import me.vucko.calendarapp.R;
+import me.vucko.calendarapp.adapters.AlarmsAdapter;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
