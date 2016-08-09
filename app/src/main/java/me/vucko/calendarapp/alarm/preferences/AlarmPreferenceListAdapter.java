@@ -15,20 +15,24 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Type;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializable {
@@ -93,18 +97,43 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		AlarmPreference alarmPreference = (AlarmPreference) getItem(position);
 		LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 		switch (alarmPreference.getType()) {
 		case BOOLEAN:
 			if(null == convertView || convertView.getId() != android.R.layout.simple_list_item_checked)
-			convertView = layoutInflater.inflate(android.R.layout.simple_list_item_checked, null);
+				convertView = layoutInflater.inflate(android.R.layout.simple_list_item_checked, null);
 
 			CheckedTextView checkedTextView = (CheckedTextView) convertView.findViewById(android.R.id.text1);
 			checkedTextView.setText(alarmPreference.getTitle());
 			checkedTextView.setChecked((Boolean) alarmPreference.getValue());
 			break;
+
+		case SEEK_BAR:
+
+			if(null == convertView || convertView.getId() != R.id.volumeSeekBar)
+				convertView = layoutInflater.inflate(R.layout.volume_seek_bar, null);
+			SeekBar seekBar = (SeekBar) convertView.findViewById(R.id.volumeSeekBar);
+			seekBar.setProgress(alarm.getVolume());
+			seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+					alarm.setVolume(position);
+				}
+
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+
+				}
+
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+
+				}
+			});
+			break;
+
 		case INTEGER:
 		case STRING:
 		case LIST:
@@ -135,9 +164,6 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 				case ALARM_NAME:
 					alarm.setAlarmName((String) preference.getValue());
 					break;
-				case ALARM_TIME:
-					alarm.setAlarmTime((String) preference.getValue());
-					break;
 				case ALARM_DIFFICULTY:
 					alarm.setDifficulty(Alarm.Difficulty.valueOf((String)preference.getValue()));
 					break;
@@ -159,22 +185,23 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 	public void setMathAlarm(Alarm alarm) {
 		this.alarm = alarm;
 		preferences.clear();
-		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_ACTIVE,"Active", null, null, alarm.getAlarmActive(),Type.BOOLEAN));
-		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_NAME, "Label",alarm.getAlarmName(), null, alarm.getAlarmName(), Type.STRING));
-		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_TIME, "Set time",alarm.getAlarmTimeString(), null, alarm.getAlarmTime(), Type.TIME));
+//		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_ACTIVE,"Active", null, null, alarm.getAlarmActive(),Type.BOOLEAN));
+//		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_NAME, "Label",alarm.getAlarmName(), null, alarm.getAlarmName(), Type.STRING));
 		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_REPEAT, "Repeat",alarm.getRepeatDaysString(), repeatDays, alarm.getDays(),Type.MULTIPLE_LIST));
-		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_DIFFICULTY,"Difficulty", alarm.getDifficulty().toString(), alarmDifficulties, alarm.getDifficulty(), Type.LIST));
-		
 			Uri alarmToneUri = Uri.parse(alarm.getAlarmTonePath());
 			Ringtone alarmTone = RingtoneManager.getRingtone(getContext(), alarmToneUri);
-		
-		if(alarmTone instanceof Ringtone && !alarm.getAlarmTonePath().equalsIgnoreCase("")){
-			preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_TONE, "Ringtone", alarmTone.getTitle(getContext()),alarmTones, alarm.getAlarmTonePath(), Type.LIST));
-		}else{
-			preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_TONE, "Ringtone", getAlarmTones()[0],alarmTones, null, Type.LIST));
-		}
-		
+
+		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_VOLUME, "Volume",null, null, alarm.getVolume(), Type.SEEK_BAR));
+
 		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_VIBRATE, "Vibrate",null, null, alarm.getVibrate(), Type.BOOLEAN));
+
+		if(alarmTone instanceof Ringtone && !alarm.getAlarmTonePath().equalsIgnoreCase("")){
+			preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_TONE, "Tone", alarmTone.getTitle(getContext()),alarmTones, alarm.getAlarmTonePath(), Type.LIST));
+		}else{
+			preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_TONE, "Tone", getAlarmTones()[0],alarmTones, null, Type.LIST));
+		}
+
+		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_DIFFICULTY,"Snooze", null, null, alarm.getSnooze(), Type.BOOLEAN));
 	}
 
 	

@@ -16,6 +16,7 @@ public class AlarmPreference {
 	public enum Key{
 		ALARM_NAME,
 		ALARM_ACTIVE,
+		ALARM_VOLUME,
 		ALARM_TIME,
 		ALARM_REPEAT,
 		ALARM_TONE,
@@ -29,7 +30,8 @@ public class AlarmPreference {
 		STRING,
 		LIST,
 		MULTIPLE_LIST,
-		TIME	
+		TIME,
+		SEEK_BAR,
 	}
 	
 	private Key key;

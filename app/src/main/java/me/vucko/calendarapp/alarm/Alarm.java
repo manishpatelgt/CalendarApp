@@ -86,8 +86,10 @@ public class Alarm implements Serializable {
 	private Day[] days = {Day.MONDAY,Day.TUESDAY,Day.WEDNESDAY,Day.THURSDAY,Day.FRIDAY,Day.SATURDAY,Day.SUNDAY};	
 	private String alarmTonePath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString();
 	private Boolean vibrate = true;
+	private Boolean snooze = true;
 	private String alarmName = "Alarm Clock";
 	private Difficulty difficulty = Difficulty.EASY;
+	private int volume = 50;
 	
 	public Alarm() {
 
@@ -213,7 +215,23 @@ public class Alarm implements Serializable {
 	            result.add(d);
 	    setDays(result.toArray(new Day[result.size()]));
 	}
-	
+
+	public int getVolume() {
+		return volume;
+	}
+
+	public void setVolume(int volume) {
+		this.volume = volume;
+	}
+
+	public Boolean getSnooze() {
+		return snooze;
+	}
+
+	public void setSnooze(Boolean snooze) {
+		this.snooze = snooze;
+	}
+
 	/**
 	 * @return the alarmTonePath
 	 */

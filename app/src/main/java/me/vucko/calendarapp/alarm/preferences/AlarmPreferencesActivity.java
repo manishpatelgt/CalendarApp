@@ -45,6 +45,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -67,6 +68,20 @@ public class AlarmPreferencesActivity extends BaseActivity {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.alarm_preferences);
+
+		TimePicker timePicker = (TimePicker) findViewById(R.id.timePickerMoreSettings);
+		if (timePicker != null) {
+			timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+				@Override
+				public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+					Calendar newAlarmTime = Calendar.getInstance();
+					newAlarmTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+					newAlarmTime.set(Calendar.MINUTE, minute);
+					newAlarmTime.set(Calendar.SECOND, 0);
+					alarm.setAlarmTime(newAlarmTime);
+				}
+			});
+		}
 
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null && bundle.containsKey("alarm")) {
@@ -263,22 +278,6 @@ public class AlarmPreferencesActivity extends BaseActivity {
 					});
 					alert.show();
 					break;
-				case TIME:
-					TimePickerDialog timePickerDialog = new TimePickerDialog(AlarmPreferencesActivity.this, new OnTimeSetListener() {
-
-						@Override
-						public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
-							Calendar newAlarmTime = Calendar.getInstance();
-							newAlarmTime.set(Calendar.HOUR_OF_DAY, hours);
-							newAlarmTime.set(Calendar.MINUTE, minutes);
-							newAlarmTime.set(Calendar.SECOND, 0);
-							alarm.setAlarmTime(newAlarmTime);
-							alarmPreferenceListAdapter.setMathAlarm(getMathAlarm());
-							alarmPreferenceListAdapter.notifyDataSetChanged();
-						}
-					}, alarm.getAlarmTime().get(Calendar.HOUR_OF_DAY), alarm.getAlarmTime().get(Calendar.MINUTE), true);
-					timePickerDialog.setTitle(alarmPreference.getTitle());
-					timePickerDialog.show();
 				default:
 					break;
 				}
