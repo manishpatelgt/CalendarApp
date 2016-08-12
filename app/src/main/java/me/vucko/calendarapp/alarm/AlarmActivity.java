@@ -11,17 +11,11 @@
  */
 package me.vucko.calendarapp.alarm;
 
-import java.util.List;
-
-import me.vucko.calendarapp.alarm.database.Database;
-import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
-import me.vucko.calendarapp.R;
-import android.os.Bundle;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.View;
@@ -32,6 +26,12 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.List;
+
+import me.vucko.calendarapp.R;
+import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
 
 public class AlarmActivity extends BaseActivity {
 
@@ -99,10 +99,7 @@ public class AlarmActivity extends BaseActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean result = super.onCreateOptionsMenu(menu);		
-		menu.findItem(R.id.menu_item_save).setVisible(false);
-		menu.findItem(R.id.menu_item_delete).setVisible(false);
-	    return result;
+		return super.onCreateOptionsMenu(menu);
 	}
 		
 	@Override

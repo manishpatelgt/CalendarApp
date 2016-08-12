@@ -22,7 +22,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin">
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -31,10 +32,13 @@
             android:layout_weight="0.8">
 
             <Button
+                android:background="@drawable/custom_shadow_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/setButton"
                 android:text="@string/set"
+                android:textColor="#000000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"/>
         </RelativeLayout>
@@ -45,13 +49,20 @@
             android:layout_weight="1">
 
         <Button
+            android:background="@drawable/custom_shadow_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:id="@+id/moreSettingsButton"
             android:text="@string/moreSettings"
             />
         </RelativeLayout>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black"/>
     <ListView
         android:id="@+id/alarms_listview"
         android:layout_width="match_parent"

@@ -11,6 +11,19 @@
  */
 package me.vucko.calendarapp.alarm.preferences;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.TextView;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,22 +31,6 @@ import java.util.List;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Type;
-
-import android.app.ActionBar;
-import android.content.Context;
-import android.database.Cursor;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckedTextView;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializable {
 
@@ -102,12 +99,13 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 		LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 		switch (alarmPreference.getType()) {
 		case BOOLEAN:
-			if(null == convertView || convertView.getId() != android.R.layout.simple_list_item_checked)
-				convertView = layoutInflater.inflate(android.R.layout.simple_list_item_checked, null);
+			if(null == convertView || convertView.getId() != R.layout.custom_switch_preference)
+				convertView = layoutInflater.inflate(R.layout.custom_switch_preference, null);
 
-			CheckedTextView checkedTextView = (CheckedTextView) convertView.findViewById(android.R.id.text1);
-			checkedTextView.setText(alarmPreference.getTitle());
-			checkedTextView.setChecked((Boolean) alarmPreference.getValue());
+			TextView textView = (TextView) convertView.findViewById(R.id.textView);
+			Switch mySwitch = (Switch) convertView.findViewById(R.id.mySwitch);
+			textView.setText(alarmPreference.getTitle());
+			mySwitch.setChecked((Boolean) alarmPreference.getValue());
 			break;
 
 		case SEEK_BAR:

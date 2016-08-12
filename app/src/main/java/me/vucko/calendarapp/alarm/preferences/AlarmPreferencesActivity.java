@@ -11,22 +11,11 @@
  */
 package me.vucko.calendarapp.alarm.preferences;
 
-import java.util.Calendar;
-
-import me.vucko.calendarapp.alarm.Alarm;
-import me.vucko.calendarapp.alarm.BaseActivity;
-import me.vucko.calendarapp.alarm.database.Database;
-import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Key;
-import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
-import me.vucko.calendarapp.R;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -45,10 +34,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.util.Calendar;
+
+import me.vucko.calendarapp.R;
+import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.alarm.BaseActivity;
+import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Key;
 
 public class AlarmPreferencesActivity extends BaseActivity {
 
@@ -66,6 +62,7 @@ public class AlarmPreferencesActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ActionBar actionBar = getSupportActionBar();
+		assert actionBar != null;
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.alarm_preferences);
 
@@ -305,35 +302,6 @@ public class AlarmPreferencesActivity extends BaseActivity {
 			callMathAlarmScheduleService();
 			Toast.makeText(AlarmPreferencesActivity.this, getMathAlarm().getTimeUntilNextAlarmMessage(), Toast.LENGTH_LONG).show();
 			finish();
-			break;
-		case R.id.menu_item_delete:
-			AlertDialog.Builder dialog = new AlertDialog.Builder(AlarmPreferencesActivity.this);
-			dialog.setTitle("Delete");
-			dialog.setMessage("Delete this alarm?");
-			dialog.setPositiveButton("Ok", new OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-
-					Database.init(getApplicationContext());
-					if (getMathAlarm().getId() < 1) {
-						// Alarm not saved
-					} else {
-						Database.deleteEntry(alarm);
-						callMathAlarmScheduleService();
-					}
-					finish();
-				}
-			});
-			dialog.setNegativeButton("Cancel", new OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			dialog.show();
-
 			break;
 		}
 		return super.onOptionsItemSelected(item);
