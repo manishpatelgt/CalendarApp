@@ -5,6 +5,7 @@
     <string name="first_fragment_description">We\'ll let you know when your alarm is going to make you miss a calendar event</string>
     <string name="sync_calendar_button_text"><font size="20">Sync your calendar</font>\n\<font size="10"> to Get Started</font></string>
     <string name="choose_default_calendar_button_text"><font size="20">Choose your default</font>\n\<font size="10"> Calendar App</font></string>
+    <string name="timeAndFrequency">Time &amp; Frequency</string>
 
     <!-- Application -->
     <color name="holo_blue_light">#ff33b5e5</color>
@@ -65,6 +66,11 @@
     <string name="mmDD">MM/DD</string>
     <string name="hhMM">HH:MM AM</string>
     <string name="notificationSettings">Notification Settings</string>
+    <string name="notification">Notification</string>
+    <string name="eventTiming">Event Timing</string>
+    <string name="eventsBefore">events before</string>
+    <string name="eventsBeforeFirstAlarmBy">events before first alarm by</string>
+    <string name="excludeAlarmsBefore">exclude alarms before</string>
     <string name="calendarSync">Calendar Sync</string>
     <string name="contactUs">Contact Us</string>
     <string name="help">Help</string>
@@ -76,5 +82,5 @@
     <string name="title_activity_more_settings">More Settings</string>
     <string name="title_activity_detailed_day">Detailed Day</string>
     <string name="title_activity_sync_calendars">Sync Calendars</string>
-    <string name="title_activity_notification_settings">NotificationSettingsActivity</string>
+    <string name="title_activity_notification_settings">Notification Settings</string>
 </resources>

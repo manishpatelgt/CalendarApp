@@ -61,9 +61,9 @@ public class AlarmsAdapter extends BaseAdapter {
         xButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alarms.remove(position);
                 Database.init(context);
                 Database.deleteEntry(alarms.get(position));
+                alarms.remove(position);
                 callAlarmScheduleService();
                 notifyDataSetChanged();
             }

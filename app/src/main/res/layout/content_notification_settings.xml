@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,4 +12,94 @@
     tools:context="me.vucko.calendarapp.notifications.NotificationSettingsActivity"
     tools:showIn="@layout/activity_notification_settings">
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/timeAndFrequency"
+            android:padding="@dimen/appbar_padding_top"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black"
+            android:text="@string/notification" />
+
+        <TimePicker
+            android:id="@+id/notificationTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            android:layout_gravity="center_horizontal"
+
+            android:layout_marginTop="@dimen/timePickerMargin"
+            android:layout_marginBottom="@dimen/timePickerMargin"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/eventTiming"
+            android:padding="@dimen/appbar_padding_top"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:layout_gravity="center_horizontal" />
+
+        <CheckBox
+            android:id="@+id/eventsBeforeCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black"
+            android:text="@string/eventsBefore" />
+
+        <TimePicker
+            android:id="@+id/eventsBeforeTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            android:layout_gravity="center_horizontal"
+
+            android:layout_marginTop="@dimen/timePickerMargin"
+            android:layout_marginBottom="@dimen/timePickerMargin"/>
+
+        <CheckBox
+            android:id="@+id/eventsBeforeFirstAlarmByCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black"
+            android:text="@string/eventsBeforeFirstAlarmBy" />
+
+        <TimePicker
+            android:id="@+id/eventsBeforeFirstAlarmByTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            android:layout_gravity="center_horizontal" />
+
+        <CheckBox
+            android:id="@+id/excludeAlarmsBeforeCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black"
+            android:text="@string/excludeAlarmsBefore" />
+
+        <TimePicker
+            android:id="@+id/excludeAlarmsBeforeTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            android:layout_gravity="center_horizontal"
+
+            android:layout_marginTop="@dimen/timePickerMargin"
+            android:layout_marginBottom="@dimen/timePickerMargin"/>
+    </LinearLayout>
+
+</ScrollView>

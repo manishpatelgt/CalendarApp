@@ -10,4 +10,5 @@
     <dimen name="syncCalendarTextViewMarginTop">35dp</dimen>
     <dimen name="syncCalendarButtonPadding">50dp</dimen>
     <dimen name="syncCalendarButtonPaddingTop">40dp</dimen>
+    <dimen name="timePickerMargin">-32dp</dimen>
 </resources>
