@@ -31,7 +31,7 @@ public class DetailedDayActivity extends AppCompatActivity {
             }
         });
         ListView alarmsListView = (ListView) findViewById(R.id.alarmsListView);
-        AlarmsAdapter alarmsAdapter = new AlarmsAdapter(this);
+        AlarmsAdapter alarmsAdapter = new AlarmsAdapter(this, null);
         assert alarmsListView != null;
         // popuni random alarmima svim iz baze za sad
         Database.init(this);

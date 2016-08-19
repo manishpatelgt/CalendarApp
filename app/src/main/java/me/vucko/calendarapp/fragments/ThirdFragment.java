@@ -12,6 +12,7 @@ import android.widget.Button;
 import me.vucko.calendarapp.ContactUsActivity;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.SyncCalendarsActivity;
+import me.vucko.calendarapp.notifications.NotificationSettingsActivity;
 
 
 public class ThirdFragment extends Fragment {
@@ -43,6 +44,13 @@ public class ThirdFragment extends Fragment {
     }
 
     private void setOnClickListeners(){
+        notificationSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NotificationSettingsActivity.class);
+                startActivity(intent);
+            }
+        });
         contactUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

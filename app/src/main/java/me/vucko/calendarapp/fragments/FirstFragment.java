@@ -43,10 +43,16 @@ public class FirstFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        alarmsAdapter = new AlarmsAdapter(context);
         Database.init(context);
+        Database.getDatabase();
         final List<Alarm> alarms = Database.getAll();
-        alarmsAdapter.setAlarms(alarms);
+        for (int i = 0; i < alarms.size(); i++) {
+            if (alarms.get(i).getEvent()) {
+                alarms.remove(i);
+            }
+        }
+        alarmsAdapter = new AlarmsAdapter(context, alarms);
+        alarmsAdapter.notifyDataSetChanged();
         super.onAttach(context);
     }
 

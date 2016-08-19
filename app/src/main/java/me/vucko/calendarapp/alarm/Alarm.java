@@ -90,6 +90,7 @@ public class Alarm implements Serializable {
 	private String alarmName = "Alarm Clock";
 	private Difficulty difficulty = Difficulty.EASY;
 	private int volume = 50;
+	private Boolean event = false;
 	
 	public Alarm() {
 
@@ -129,6 +130,9 @@ public class Alarm implements Serializable {
 	 * @return the alarmTime
 	 */
 	public Calendar getAlarmTime() {
+		if (event) {
+			return alarmTime;
+		}
 		if (alarmTime.before(Calendar.getInstance()))
 			alarmTime.add(Calendar.DAY_OF_MONTH, 1);
 		while(!Arrays.asList(getDays()).contains(Day.values()[alarmTime.get(Calendar.DAY_OF_WEEK)-1])){
@@ -290,6 +294,14 @@ public class Alarm implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Boolean getEvent() {
+		return event;
+	}
+
+	public void setEvent(Boolean event) {
+		this.event = event;
 	}
 
 	public String getRepeatDaysString() {

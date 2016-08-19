@@ -96,9 +96,10 @@ public class AlarmService extends Service {
 		Log.d(this.getClass().getSimpleName(),"onStartCommand()");
 		Alarm alarm = getNext();
 		if(null != alarm){
-			alarm.schedule(getApplicationContext());
-			Log.d(this.getClass().getSimpleName(),alarm.getTimeUntilNextAlarmMessage());
-			
+			if (!alarm.getEvent()) {
+				alarm.schedule(getApplicationContext());
+				Log.d(this.getClass().getSimpleName(), alarm.getTimeUntilNextAlarmMessage());
+			}
 		}else{
 			Intent myIntent = new Intent(getApplicationContext(), AlarmAlertBroadcastReciever.class);
 			myIntent.putExtra("alarm", new Alarm());

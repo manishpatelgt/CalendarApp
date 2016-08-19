@@ -3,18 +3,24 @@ package me.vucko.calendarapp;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
@@ -29,15 +35,23 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.client.util.StringUtils;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
+import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.domain.entity.Calendar;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -343,12 +357,26 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
 
         @Override
         protected void onPostExecute(List<String> output) {
+
             mProgress.hide();
-            if (output == null || output.size() == 0) {
-//                mOutputText.setText("No results returned.");
-            } else {
-                output.add(0, "Data retrieved using the Google Calendar API:");
-//                mOutputText.setText(TextUtils.join("\n", output));
+            if (output != null && output.size() != 0) {
+                Database.init(getApplicationContext());
+                for (int i = 0; i < output.size(); i++) {
+                    DateFormat df = new SimpleDateFormat("(yyyy-MM-dd'T'HH:mm:ss.SSSZ)", Locale.getDefault());
+
+                    java.util.Calendar eventCalendar = java.util.Calendar.getInstance();
+                    try {
+                        eventCalendar.setTime(df.parse(output.get(i).substring(output.get(i).lastIndexOf(" ") + 1)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Alarm alarm = new Alarm();
+                    alarm.setEvent(true);
+                    alarm.setAlarmName(output.get(i).substring(0, output.get(i).lastIndexOf(" ")));
+                    alarm.setAlarmTime(eventCalendar);
+                    Database.create(alarm);
+                }
+                sendNotification();
             }
         }
 
@@ -371,6 +399,28 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
             } else {
 //                mOutputText.setText("Request cancelled.");
             }
+        }
+
+        private void sendNotification() {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("AlarmApp")
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText("bla"))
+                    .setAutoCancel(true)
+                    .setContentText("blaa")
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(0, notificationBuilder.build());
         }
     }
 

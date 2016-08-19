@@ -82,10 +82,17 @@
         <activity
             android:name=".SyncCalendarsActivity"
             android:label="@string/title_activity_sync_calendars"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".notifications.NotificationSettingsActivity"
+            android:label="@string/title_activity_notification_settings"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>

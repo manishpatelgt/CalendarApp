@@ -24,8 +24,9 @@ public class AlarmsAdapter extends BaseAdapter {
     private List<Alarm> alarms = new ArrayList<>();
     private Context context;
 
-    public AlarmsAdapter(Context context) {
+    public AlarmsAdapter(Context context, List<Alarm> alarms) {
         this.context = context;
+        this.alarms = alarms;
     }
 
     @Override
