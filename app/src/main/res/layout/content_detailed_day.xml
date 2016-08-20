@@ -40,19 +40,19 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin">
                 <TextView
-                    android:text="@string/eventNameTimePlaceholder"
+                    android:id="@+id/eventDetail1"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
                 <TextView
-                    android:text="@string/eventNameTimePlaceholder"
+                    android:id="@+id/eventDetail2"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
                 <TextView
-                    android:text="@string/eventNameTimePlaceholder"
+                    android:id="@+id/eventDetail3"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"

@@ -40,19 +40,19 @@
         android:orientation="vertical"
         android:gravity="center_vertical">
         <TextView
+            android:id="@+id/alarm1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hhMM"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
         <TextView
+            android:id="@+id/alarm2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hhMM"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
         <TextView
+            android:id="@+id/alarm3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hhMM"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
     </LinearLayout>
     <ImageView
@@ -68,19 +68,19 @@
         android:orientation="vertical"
         android:gravity="center_vertical">
         <TextView
+            android:id="@+id/event1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hhMM"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
         <TextView
+            android:id="@+id/event2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hhMM"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
         <TextView
+            android:id="@+id/event3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hhMM"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
     </LinearLayout>
 

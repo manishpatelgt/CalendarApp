@@ -91,6 +91,7 @@ public class Alarm implements Serializable {
 	private Difficulty difficulty = Difficulty.EASY;
 	private int volume = 50;
 	private Boolean event = false;
+	private Calendar alarmEventTime = Calendar.getInstance();
 	
 	public Alarm() {
 
@@ -218,6 +219,14 @@ public class Alarm implements Serializable {
 	        if(!d.equals(day))
 	            result.add(d);
 	    setDays(result.toArray(new Day[result.size()]));
+	}
+
+	public Calendar getAlarmEventTime() {
+		return alarmEventTime;
+	}
+
+	public void setAlarmEventTime(Calendar alarmEventTime) {
+		this.alarmEventTime = alarmEventTime;
 	}
 
 	public int getVolume() {

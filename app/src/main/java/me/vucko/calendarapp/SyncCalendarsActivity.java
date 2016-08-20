@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -67,6 +68,7 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+    static final int MILLISECONDS_IN_WEEK = 1000 * 60 * 60 * 24 * 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -358,9 +360,12 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
         @Override
         protected void onPostExecute(List<String> output) {
 
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
             mProgress.hide();
             if (output != null && output.size() != 0) {
                 Database.init(getApplicationContext());
+                List<Alarm> alarms = Database.getAll();
                 for (int i = 0; i < output.size(); i++) {
                     DateFormat df = new SimpleDateFormat("(yyyy-MM-dd'T'HH:mm:ss.SSSZ)", Locale.getDefault());
 
@@ -370,11 +375,40 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    Alarm alarm = new Alarm();
-                    alarm.setEvent(true);
-                    alarm.setAlarmName(output.get(i).substring(0, output.get(i).lastIndexOf(" ")));
-                    alarm.setAlarmTime(eventCalendar);
-                    Database.create(alarm);
+                    String name = output.get(i).substring(0, output.get(i).lastIndexOf(" "));
+
+                    java.util.Calendar calendar = java.util.Calendar.getInstance();
+                    if ((eventCalendar.getTimeInMillis() - calendar.getTimeInMillis()) > MILLISECONDS_IN_WEEK) {
+                        continue;
+                    }
+
+                    boolean exist = false;
+                    for(int j = 0; j < alarms.size(); j++) {
+                        if ((alarms.get(j).getAlarmName().equals(name)) && (alarms.get(i).getAlarmEventTime().getTimeInMillis() == eventCalendar.getTimeInMillis())) {
+                            exist = true;
+                        }
+                    }
+                    if (!exist) {
+                        Alarm alarm = new Alarm();
+                        alarm.setEvent(true);
+                        alarm.setAlarmName(name);
+                        alarm.setAlarmEventTime(eventCalendar);
+                        Database.create(alarm);
+
+
+                        eventCalendar.add(java.util.Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicked", 0) * (-1));
+                        int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
+                        if ((eventCalendar.get(java.util.Calendar.HOUR) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) > excludeAlarmsBeforeTimePicker) {
+                            continue;
+                        }
+
+                        alarm.setAlarmName(name);
+                        alarm.setAlarmEventTime(eventCalendar);
+                        Database.create(alarm);
+
+                        alarm.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
+
+                    }
                 }
                 sendNotification();
             }
@@ -421,6 +455,18 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
             notificationManager.notify(0, notificationBuilder.build());
+        }
+    }
+
+    private Alarm.Day[] convert(int day) {
+        switch (day) {
+            case 1 : return new Alarm.Day[]{Alarm.Day.SUNDAY};
+            case 2 : return new Alarm.Day[]{Alarm.Day.MONDAY};
+            case 3 : return new Alarm.Day[]{Alarm.Day.TUESDAY};
+            case 4 : return new Alarm.Day[]{Alarm.Day.MONDAY};
+            case 5 : return new Alarm.Day[]{Alarm.Day.THURSDAY};
+            case 6 : return new Alarm.Day[]{Alarm.Day.FRIDAY};
+            default : return new Alarm.Day[]{Alarm.Day.SATURDAY};
         }
     }
 

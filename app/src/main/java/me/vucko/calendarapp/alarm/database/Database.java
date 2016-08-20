@@ -17,11 +17,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.Alarm.Difficulty;
+import me.vucko.calendarapp.domain.entity.Calendar;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -40,7 +46,7 @@ public class Database extends SQLiteOpenHelper {
 	static SQLiteDatabase database = null;
 	
 	static final String DATABASE_NAME = "DB";
-	static final int DATABASE_VERSION = 2;
+	static final int DATABASE_VERSION = 3;
 	
 	public static final String ALARM_TABLE = "alarm";
 	public static final String COLUMN_ALARM_ID = "_id";
@@ -52,6 +58,7 @@ public class Database extends SQLiteOpenHelper {
 	public static final String COLUMN_ALARM_VIBRATE = "alarm_vibrate";
 	public static final String COLUMN_ALARM_NAME = "alarm_name";	
 	public static final String COLUMN_ALARM_EVENT = "alarm_event";
+	public static final String COLUMN_ALARM_EVENT_TIME = "alarm_event_time";
 
 	public static void init(Context context) {
 		if (null == instance) {
@@ -96,6 +103,8 @@ public class Database extends SQLiteOpenHelper {
 		cv.put(COLUMN_ALARM_VIBRATE, alarm.getVibrate());
 		cv.put(COLUMN_ALARM_NAME, alarm.getAlarmName());
 		cv.put(COLUMN_ALARM_EVENT, alarm.getEvent());
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault());
+		cv.put(COLUMN_ALARM_EVENT_TIME, df.format(alarm.getAlarmEventTime().getTime()));
 		
 		return getDatabase().insert(ALARM_TABLE, null, cv);
 	}
@@ -121,6 +130,8 @@ public class Database extends SQLiteOpenHelper {
 		cv.put(COLUMN_ALARM_VIBRATE, alarm.getVibrate());
 		cv.put(COLUMN_ALARM_NAME, alarm.getAlarmName());
 		cv.put(COLUMN_ALARM_EVENT, alarm.getEvent());
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault());
+		cv.put(COLUMN_ALARM_EVENT_TIME, df.format(alarm.getAlarmEventTime().getTime()));
 					
 		return getDatabase().update(ALARM_TABLE, cv, "_id=" + alarm.getId(), null);
 	}
@@ -148,6 +159,7 @@ public class Database extends SQLiteOpenHelper {
 				COLUMN_ALARM_VIBRATE,
 				COLUMN_ALARM_NAME,
 				COLUMN_ALARM_EVENT,
+				COLUMN_ALARM_EVENT_TIME,
 				};
 		Cursor c = getDatabase().query(ALARM_TABLE, columns, COLUMN_ALARM_ID+"="+id, null, null, null,
 				null);
@@ -199,6 +211,7 @@ public class Database extends SQLiteOpenHelper {
 				COLUMN_ALARM_VIBRATE,
 				COLUMN_ALARM_NAME,
 				COLUMN_ALARM_EVENT,
+				COLUMN_ALARM_EVENT_TIME,
 				};
 		return getDatabase().query(ALARM_TABLE, columns, null, null, null, null,
 				null);
@@ -220,7 +233,8 @@ public class Database extends SQLiteOpenHelper {
 				+ COLUMN_ALARM_TONE + " TEXT NOT NULL, " 
 				+ COLUMN_ALARM_VIBRATE + " INTEGER NOT NULL, " 
 				+ COLUMN_ALARM_NAME + " TEXT NOT NULL, "
-				+ COLUMN_ALARM_EVENT + " INTEGER NOT NULL)");
+				+ COLUMN_ALARM_EVENT + " INTEGER NOT NULL, "
+				+ COLUMN_ALARM_EVENT_TIME+ " TEXT NOT NULL )");
 	}
 
 	@Override
@@ -274,6 +288,15 @@ public class Database extends SQLiteOpenHelper {
 				alarm.setVibrate(cursor.getInt(6) == 1);
 				alarm.setAlarmName(cursor.getString(7));
 				alarm.setEvent(cursor.getInt(8) == 1);
+
+				try {
+					java.util.Calendar calendar = java.util.Calendar.getInstance();
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault());
+					calendar.setTime(df.parse(cursor.getString(9)));
+					alarm.setAlarmEventTime(calendar);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 				
 				alarms.add(alarm);
 

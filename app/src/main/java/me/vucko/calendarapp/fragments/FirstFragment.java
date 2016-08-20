@@ -46,7 +46,8 @@ public class FirstFragment extends Fragment {
         Database.init(context);
         Database.getDatabase();
         final List<Alarm> alarms = Database.getAll();
-        for (int i = 0; i < alarms.size(); i++) {
+        int size = alarms.size();
+        for (int i = size - 1; i >= 0; i--) {
             if (alarms.get(i).getEvent()) {
                 alarms.remove(i);
             }
