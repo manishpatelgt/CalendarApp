@@ -71,6 +71,7 @@
     <string name="eventsBefore">events before</string>
     <string name="eventsBeforeFirstAlarmBy">events before first alarm by</string>
     <string name="excludeAlarmsBefore">exclude alarms before</string>
+    <string name="newAlarms">New alarm(s) added automatically</string>
     <string name="calendarSync">Calendar Sync</string>
     <string name="contactUs">Contact Us</string>
     <string name="help">Help</string>

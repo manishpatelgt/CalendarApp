@@ -3,7 +3,6 @@ package me.vucko.calendarapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import me.vucko.calendarapp.DetailedDayActivity;
 import me.vucko.calendarapp.R;
@@ -27,7 +25,6 @@ import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.domain.CalendarDay;
 import me.vucko.calendarapp.domain.CalendarEvent;
-import me.vucko.calendarapp.domain.entity.Calendar;
 
 
 public class SecondFragment extends Fragment {
@@ -52,22 +49,22 @@ public class SecondFragment extends Fragment {
         calendarD.setTime(d);
         Date d1 = new Date(x+ MILLISECONDS_IN_DAY);
         java.util.Calendar calendarD1 = java.util.Calendar.getInstance();
-        calendarD1.setTime(d);
+        calendarD1.setTime(d1);
         Date d2 = new Date(x+ MILLISECONDS_IN_DAY *2);
         java.util.Calendar calendarD2 = java.util.Calendar.getInstance();
-        calendarD2.setTime(d);
+        calendarD2.setTime(d2);
         Date d3 = new Date(x+ MILLISECONDS_IN_DAY *3);
         java.util.Calendar calendarD3 = java.util.Calendar.getInstance();
-        calendarD3.setTime(d);
+        calendarD3.setTime(d3);
         Date d4 = new Date(x+ MILLISECONDS_IN_DAY *4);
         java.util.Calendar calendarD4 = java.util.Calendar.getInstance();
-        calendarD4.setTime(d);
+        calendarD4.setTime(d4);
         Date d5 = new Date(x+ MILLISECONDS_IN_DAY *5);
         java.util.Calendar calendarD5 = java.util.Calendar.getInstance();
-        calendarD5.setTime(d);
+        calendarD5.setTime(d5);
         Date d6 = new Date(x+ MILLISECONDS_IN_DAY *6);
         java.util.Calendar calendarD6 = java.util.Calendar.getInstance();
-        calendarD6.setTime(d);
+        calendarD6.setTime(d6);
 
         Database.init(getContext());
         List<Alarm> alarms = Database.getAll();

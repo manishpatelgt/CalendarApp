@@ -21,7 +21,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
@@ -36,7 +35,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.client.util.StringUtils;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
@@ -52,7 +50,6 @@ import java.util.Locale;
 
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
-import me.vucko.calendarapp.domain.entity.Calendar;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -444,10 +441,10 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("AlarmApp")
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText("bla"))
+                    .setContentTitle(getString(R.string.app_name))
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.newAlarms)))
                     .setAutoCancel(true)
-                    .setContentText("blaa")
+                    .setContentText(getString(R.string.newAlarms))
                     .setSound(defaultSoundUri)
                     .setContentIntent(pendingIntent);
 

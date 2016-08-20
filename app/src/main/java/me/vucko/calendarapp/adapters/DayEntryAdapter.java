@@ -106,7 +106,9 @@ public class DayEntryAdapter extends ArrayAdapter<CalendarDay> {
 
         CalendarDay calendarDay = calendarDays.get(position);
         viewHolder.dayLetterTextView.setText(calendarDay.getDayLetter());
-        viewHolder.dayDateTextView.setText(simpleDateFormat.format(calendarDay.getDayDate()));
+        SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("MM/dd", Locale.getDefault());
+
+        viewHolder.dayDateTextView.setText(simpleDateFormat2.format(calendarDay.getDayDate()));
 
         return convertView;
     }
