@@ -135,6 +135,12 @@ public class FirstFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        updateAlarmList();
+        super.onResume();
+    }
+
     public void updateAlarmList(){
 
         getActivity().runOnUiThread(new Runnable() {
