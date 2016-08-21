@@ -147,6 +147,12 @@ public class FirstFragment extends Fragment {
             public void run() {
                 Database.init(getActivity());
                 List<Alarm> alarms = Database.getAll();
+                int size = alarms.size();
+                for (int i = size - 1; i >= 0; i--) {
+                    if (alarms.get(i).getEvent()) {
+                        alarms.remove(i);
+                    }
+                }
                 alarmsAdapter.setAlarms(alarms);
 
                 // reload content

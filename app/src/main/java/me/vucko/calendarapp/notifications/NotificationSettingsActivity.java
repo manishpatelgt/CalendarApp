@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TimePicker;
 
 import java.sql.Time;
@@ -36,6 +38,16 @@ public class NotificationSettingsActivity extends AppCompatActivity {
             });
         }
 
+        CheckBox eventsBeforeCheckbox = (CheckBox) findViewById(R.id.eventsBeforeCheckbox);
+        if (eventsBeforeCheckbox != null) {
+            eventsBeforeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    editor.putBoolean("eventsBeforeCheckbox", isChecked);
+                }
+            });
+        }
+
         final TimePicker eventsBeforeTimePicker = (TimePicker) findViewById(R.id.eventsBeforeTimePicker);
 
         if (eventsBeforeTimePicker != null) {
@@ -48,6 +60,16 @@ public class NotificationSettingsActivity extends AppCompatActivity {
             });
         }
 
+        CheckBox eventsBeforeFirstAlarmByCheckbox = (CheckBox) findViewById(R.id.eventsBeforeFirstAlarmByCheckbox);
+        if (eventsBeforeFirstAlarmByCheckbox != null) {
+            eventsBeforeFirstAlarmByCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    editor.putBoolean("eventsBeforeFirstAlarmByCheckbox", isChecked);
+                }
+            });
+        }
+
         final TimePicker eventsBeforeFirstAlarmByTimePicker = (TimePicker) findViewById(R.id.eventsBeforeFirstAlarmByTimePicker);
 
         if (eventsBeforeFirstAlarmByTimePicker != null) {
@@ -56,6 +78,16 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                 public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                     int minutes = eventsBeforeFirstAlarmByTimePicker.getCurrentHour() * 60 + eventsBeforeFirstAlarmByTimePicker.getCurrentMinute();
                     editor.putInt("eventsBeforeFirstAlarmByTimePicker", minutes);
+                }
+            });
+        }
+
+        CheckBox excludeAlarmsBeforeCheckbox = (CheckBox) findViewById(R.id.excludeAlarmsBeforeCheckbox);
+        if (excludeAlarmsBeforeCheckbox != null) {
+            excludeAlarmsBeforeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    editor.putBoolean("excludeAlarmsBeforeCheckbox", isChecked);
                 }
             });
         }

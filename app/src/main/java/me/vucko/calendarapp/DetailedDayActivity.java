@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +52,7 @@ public class DetailedDayActivity extends AppCompatActivity {
         final List<Alarm> alarms = Database.getAll();
         List<Alarm> alarmList = new ArrayList<>();
 
+        TextView customDateTime = (TextView) findViewById(R.id.customDateTime);
         TextView event1 = (TextView) findViewById(R.id.eventDetail1);
         TextView event2 = (TextView) findViewById(R.id.eventDetail2);
         TextView event3 = (TextView) findViewById(R.id.eventDetail3);
@@ -60,6 +63,11 @@ public class DetailedDayActivity extends AppCompatActivity {
         long x = d.getTime();
         Date start = new Date(x+ MILLISECONDS_IN_DAY * position);
         Date end = new Date(x+ MILLISECONDS_IN_DAY * (position + 1));
+
+        if (customDateTime != null) {
+            SimpleDateFormat customDateFormat = new SimpleDateFormat("EEEEEEE, MMMM dd", Locale.getDefault());
+            customDateTime.setText(customDateFormat.format(start));
+        }
 
         int j = 0;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());

@@ -392,15 +392,15 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                         alarm.setAlarmEventTime(eventCalendar);
                         Database.create(alarm);
 
-
                         eventCalendar.add(java.util.Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicked", 0) * (-1));
                         int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
-                        if ((eventCalendar.get(java.util.Calendar.HOUR) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) > excludeAlarmsBeforeTimePicker) {
+                        if (sharedPreferences.getBoolean("eventsBeforeCheckbox", false) &&
+                                (eventCalendar.get(java.util.Calendar.HOUR) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) > excludeAlarmsBeforeTimePicker) {
                             continue;
                         }
 
                         alarm.setAlarmName(name);
-                        alarm.setAlarmEventTime(eventCalendar);
+                        alarm.setAlarmTime(eventCalendar);
                         Database.create(alarm);
 
                         alarm.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
