@@ -39,7 +39,9 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         }
 
         CheckBox eventsBeforeCheckbox = (CheckBox) findViewById(R.id.eventsBeforeCheckbox);
+
         if (eventsBeforeCheckbox != null) {
+            eventsBeforeCheckbox.setChecked(sharedPreferences.getBoolean("eventsBeforeCheckbox", false));
             eventsBeforeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -62,6 +64,7 @@ public class NotificationSettingsActivity extends AppCompatActivity {
 
         CheckBox eventsBeforeFirstAlarmByCheckbox = (CheckBox) findViewById(R.id.eventsBeforeFirstAlarmByCheckbox);
         if (eventsBeforeFirstAlarmByCheckbox != null) {
+            eventsBeforeFirstAlarmByCheckbox.setChecked(sharedPreferences.getBoolean("eventsBeforeFirstAlarmByCheckbox", false));
             eventsBeforeFirstAlarmByCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -84,6 +87,7 @@ public class NotificationSettingsActivity extends AppCompatActivity {
 
         CheckBox excludeAlarmsBeforeCheckbox = (CheckBox) findViewById(R.id.excludeAlarmsBeforeCheckbox);
         if (excludeAlarmsBeforeCheckbox != null) {
+            excludeAlarmsBeforeCheckbox.setChecked(sharedPreferences.getBoolean("excludeAlarmsBeforeCheckbox", false));
             excludeAlarmsBeforeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
