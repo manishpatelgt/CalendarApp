@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -56,6 +57,11 @@ public class AlarmsAdapter extends BaseAdapter {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
         String time = simpleDateFormat.format(alarm.getAlarmTime().getTime());
         timeTextView.setText(time);
+
+        ImageView alarmRepeatImageView = (ImageView) convertView.findViewById(R.id.alarmRepeatImageView);
+        if (!alarm.isRepeating()){
+            alarmRepeatImageView.setVisibility(View.INVISIBLE);
+        }
 
         ImageButton xButton = (ImageButton) convertView.findViewById(R.id.x_button);
         xButton.setOnClickListener(new View.OnClickListener() {

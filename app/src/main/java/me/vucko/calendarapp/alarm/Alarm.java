@@ -382,4 +382,9 @@ public class Alarm implements Serializable {
 		}
 		return alert;
 	}
+
+	public boolean isRepeating(){
+		Day[] days = getDays();
+ 		return days.length > 1;
+	}
 }

@@ -68,6 +68,12 @@ public class AlarmPreferencesActivity extends BaseActivity {
 
 		TimePicker timePicker = (TimePicker) findViewById(R.id.timePickerMoreSettings);
 		if (timePicker != null) {
+			Bundle extras = getIntent().getExtras();
+			if (extras != null){
+				timePicker.setCurrentHour(extras.getInt("timePickerTimeHour", 1));
+				timePicker.setCurrentMinute(extras.getInt("timePickerTimeMinute", 0));
+			}
+
 			timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
 				@Override
 				public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {

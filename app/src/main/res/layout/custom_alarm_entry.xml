@@ -29,6 +29,7 @@
                 android:weightSum="10">
 
                 <ImageView
+                    android:id="@+id/alarmRepeatImageView"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_autorenew_black_24px"
