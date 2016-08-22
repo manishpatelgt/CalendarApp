@@ -70,35 +70,25 @@ public class DetailedDayActivity extends AppCompatActivity {
         }
 
         int j = 0;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aaa", Locale.getDefault());
 
         for (int i = 0; i < alarms.size(); i++) {
             long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
             if (alarms.get(i).getEvent()) {
                 if ((start.getTime() < eventMillis) && (eventMillis < end.getTime())) {
                     j++;
-                    if (j == 1) {
-                        event1.setText(simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
-                        if (alarms.get(i).getAlarmEventTime().get(Calendar.AM_PM) == Calendar.PM)
-                            event1.setText(event1.getText() + " PM");
-                        else
-                            event1.setText(event1.getText() + " AM");
+                    if ((j == 1) && (event1 != null)) {
+                        event1.setText(alarms.get(i).getAlarmName() + ' ' + simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
+
                     }
 
-                    if (j == 2) {
-                        event2.setText(simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
-                        if (alarms.get(i).getAlarmEventTime().get(Calendar.AM_PM) == Calendar.PM)
-                            event2.setText(event2.getText() + " PM");
-                        else
-                            event2.setText(event2.getText() + " AM");
+                    if ((j == 2) && (event2 != null)) {
+                        event2.setText(alarms.get(i).getAlarmName() + ' ' + simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
+
                     }
 
-                    if (j == 3) {
-                        event3.setText(simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
-                        if (alarms.get(i).getAlarmEventTime().get(Calendar.AM_PM) == Calendar.PM)
-                            event3.setText(event3.getText() + " PM");
-                        else
-                            event3.setText(event3.getText() + " AM");
+                    if ((j == 3) && (event3 != null)) {
+                        event3.setText(alarms.get(i).getAlarmName() + ' ' + simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
                     }
                 }
             }

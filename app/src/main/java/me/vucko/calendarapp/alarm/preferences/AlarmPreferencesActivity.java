@@ -67,12 +67,30 @@ public class AlarmPreferencesActivity extends BaseActivity {
 		setContentView(R.layout.alarm_preferences);
 
 		TimePicker timePicker = (TimePicker) findViewById(R.id.timePickerMoreSettings);
-		if (timePicker != null) {
-			Bundle extras = getIntent().getExtras();
-			if (extras != null){
-				timePicker.setCurrentHour(extras.getInt("timePickerTimeHour", 1));
-				timePicker.setCurrentMinute(extras.getInt("timePickerTimeMinute", 0));
+
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null && bundle.containsKey("alarm")) {
+			Alarm alarm = (Alarm) bundle.getSerializable("alarm");
+			setMathAlarm(alarm);
+			if (timePicker != null) {
+				timePicker.setCurrentHour(alarm.getAlarmTime().get(Calendar.HOUR_OF_DAY));
+				timePicker.setCurrentMinute(alarm.getAlarmTime().get(Calendar.MINUTE));
 			}
+		} else {
+			setMathAlarm(new Alarm());
+		}
+		if (bundle != null && bundle.containsKey("adapter")) {
+			setListAdapter((AlarmPreferenceListAdapter) bundle.getSerializable("adapter"));
+		} else {
+			setListAdapter(new AlarmPreferenceListAdapter(this, getMathAlarm()));
+		}
+
+		if (timePicker != null) {
+//			Bundle extras = getIntent().getExtras();
+//			if (extras != null){
+//				timePicker.setCurrentHour(extras.getInt("timePickerTimeHour", 1));
+//				timePicker.setCurrentMinute(extras.getInt("timePickerTimeMinute", 0));
+//			}
 
 			timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
 				@Override
@@ -84,18 +102,6 @@ public class AlarmPreferencesActivity extends BaseActivity {
 					alarm.setAlarmTime(newAlarmTime);
 				}
 			});
-		}
-
-		Bundle bundle = getIntent().getExtras();
-		if (bundle != null && bundle.containsKey("alarm")) {
-			setMathAlarm((Alarm) bundle.getSerializable("alarm"));
-		} else {
-			setMathAlarm(new Alarm());
-		}
-		if (bundle != null && bundle.containsKey("adapter")) {
-			setListAdapter((AlarmPreferenceListAdapter) bundle.getSerializable("adapter"));
-		} else {
-			setListAdapter(new AlarmPreferenceListAdapter(this, getMathAlarm()));
 		}
 
 		getListView().setOnItemClickListener(new OnItemClickListener() {

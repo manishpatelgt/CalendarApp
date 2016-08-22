@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -18,6 +19,7 @@ import java.util.Locale;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 
 public class AlarmsAdapter extends BaseAdapter {
@@ -53,10 +55,20 @@ public class AlarmsAdapter extends BaseAdapter {
         }
 
         final Alarm alarm = getItem(position);
+        LinearLayout linearLayoutDayEntry = (LinearLayout) convertView.findViewById(R.id.linearLayoutDayEntry);
         TextView timeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
         String time = simpleDateFormat.format(alarm.getAlarmTime().getTime());
         timeTextView.setText(time);
+
+        linearLayoutDayEntry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AlarmPreferencesActivity.class);
+                intent.putExtra("alarm", alarm);
+                context.startActivity(intent);
+            }
+        });
 
         ImageView alarmRepeatImageView = (ImageView) convertView.findViewById(R.id.alarmRepeatImageView);
         if (!alarm.isRepeating()){

@@ -381,7 +381,7 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
 
                     boolean exist = false;
                     for(int j = 0; j < alarms.size(); j++) {
-                        if ((alarms.get(j).getAlarmName().equals(name)) && (alarms.get(i).getAlarmEventTime().getTimeInMillis() == eventCalendar.getTimeInMillis())) {
+                        if ((alarms.get(j).getAlarmName().equals(name)) && (alarms.get(j).getAlarmEventTime().getTimeInMillis() == eventCalendar.getTimeInMillis())) {
                             exist = true;
                         }
                     }
@@ -394,14 +394,15 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
 
                         eventCalendar.add(java.util.Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicked", 0) * (-1));
                         int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
-                        if (sharedPreferences.getBoolean("eventsBeforeCheckbox", false) &&
+                        if (!sharedPreferences.getBoolean("eventsBeforeCheckbox", false) ||
                                 (eventCalendar.get(java.util.Calendar.HOUR) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) > excludeAlarmsBeforeTimePicker) {
                             continue;
                         }
 
-                        alarm.setAlarmName(name);
-                        alarm.setAlarmTime(eventCalendar);
-                        Database.create(alarm);
+                        Alarm alarm1 = new Alarm();
+                        alarm1.setAlarmName(name);
+                        alarm1.setAlarmTime(eventCalendar);
+                        Database.create(alarm1);
 
                         alarm.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
 
