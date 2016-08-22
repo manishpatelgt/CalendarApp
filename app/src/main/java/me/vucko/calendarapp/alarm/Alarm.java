@@ -97,6 +97,10 @@ public class Alarm implements Serializable {
 
 	}
 
+	public Alarm(Day[] days){
+		this.days = days;
+	}
+
 //	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 //		out.defaultWriteObject();
 //		out.writeObject(getAlarmToneUri().getEncodedPath());

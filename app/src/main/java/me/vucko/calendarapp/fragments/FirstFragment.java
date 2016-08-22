@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import me.vucko.calendarapp.MainActivity;
 import me.vucko.calendarapp.R;
@@ -72,8 +73,10 @@ public class FirstFragment extends Fragment {
         setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Alarm alarm = new Alarm();
-                alarm.setAlarmTime(timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute());
+                int hour = timePicker.getCurrentHour();
+                int minute = timePicker.getCurrentMinute();
+                Alarm alarm = new Alarm(getNextDay(hour, minute));
+                alarm.setAlarmTime(hour + ":" + minute);
                 Database.init(getActivity());
                 Database.create(alarm);
                 callAlarmScheduleService();
@@ -102,7 +105,7 @@ public class FirstFragment extends Fragment {
 
         alarmListView.setAdapter(alarmsAdapter);
         emptyTextView = (TextView) getView().findViewById(android.R.id.empty);
-        if(alarmsAdapter.getCount() > 0){
+        if (alarmsAdapter.getCount() > 0) {
             emptyTextView.setVisibility(View.GONE);
         }
 
@@ -143,7 +146,7 @@ public class FirstFragment extends Fragment {
         super.onResume();
     }
 
-    public void updateAlarmList(){
+    public void updateAlarmList() {
 
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
@@ -171,6 +174,42 @@ public class FirstFragment extends Fragment {
     protected void callAlarmScheduleService() {
         Intent AlarmServiceIntent = new Intent(getActivity(), AlarmServiceBroadcastReciever.class);
         getActivity().sendBroadcast(AlarmServiceIntent, null);
+    }
+
+    private Alarm.Day[] getNextDay(int hour, int minute) {
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        boolean nextDay = false;
+        int currentHour = calendar.getTime().getHours();
+        int currentMinute = calendar.getTime().getMinutes();
+        if (hour < currentHour || (hour == currentHour && minute < currentMinute)) {
+            nextDay = true;
+        }
+        int day = calendar.getTime().getDay();
+        if (nextDay) day = (day + 1) % 7;
+
+        switch (day) {
+            case 0:
+                return new Alarm.Day[]{Alarm.Day.SUNDAY};
+
+            case 1:
+                return new Alarm.Day[]{Alarm.Day.MONDAY};
+
+            case 2:
+                return new Alarm.Day[]{Alarm.Day.TUESDAY};
+
+            case 3:
+                return new Alarm.Day[]{Alarm.Day.WEDNESDAY};
+
+            case 4:
+                return new Alarm.Day[]{Alarm.Day.THURSDAY};
+
+            case 5:
+                return new Alarm.Day[]{Alarm.Day.FRIDAY};
+
+            default:
+                return new Alarm.Day[]{Alarm.Day.SATURDAY};
+
+        }
     }
 
 }
