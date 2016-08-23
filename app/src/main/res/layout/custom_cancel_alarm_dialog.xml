@@ -10,16 +10,19 @@
         android:text="@string/cancelFor"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
     <Button
+        android:background="@drawable/custom_shadow_button"
         android:id="@+id/todayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/today"/>
     <Button
+        android:background="@drawable/custom_shadow_button"
         android:id="@+id/allDayOfWeeksButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/allDayOfWeeks"/>
     <Button
+        android:background="@drawable/custom_shadow_button"
         android:id="@+id/entireAlarmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

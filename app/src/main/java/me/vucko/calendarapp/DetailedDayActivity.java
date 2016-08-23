@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,13 +20,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import me.vucko.calendarapp.adapters.AlarmsAdapter;
+import me.vucko.calendarapp.adapters.DetailedDayAlarmsAdapter;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
-import me.vucko.calendarapp.domain.CalendarEvent;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmEditedEvent;
 
 public class DetailedDayActivity extends AppCompatActivity {
 
+    private DetailedDayAlarmsAdapter detailedDayAlarmsAdapter;
     private static final long MILLISECONDS_IN_DAY = 60*60*24*1000;
 
     @Override
@@ -34,6 +36,9 @@ public class DetailedDayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detailed_day);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        EventBus.getDefault().register(this);
+
         Intent intent = getIntent();
         int position = intent.getIntExtra("position", 1);
 
@@ -46,7 +51,7 @@ public class DetailedDayActivity extends AppCompatActivity {
             }
         });
         ListView alarmsListView = (ListView) findViewById(R.id.alarmsListView);
-        AlarmsAdapter alarmsAdapter = new AlarmsAdapter(this, null);
+        detailedDayAlarmsAdapter = new DetailedDayAlarmsAdapter(this, null);
         assert alarmsListView != null;
         Database.init(this);
         final List<Alarm> alarms = Database.getAll();
@@ -99,8 +104,8 @@ public class DetailedDayActivity extends AppCompatActivity {
                 alarmList.add(alarms.get(i));
         }
 
-        alarmsAdapter.setAlarms(alarmList);
-        alarmsListView.setAdapter(alarmsAdapter);
+        detailedDayAlarmsAdapter.setAlarms(alarmList);
+        alarmsListView.setAdapter(detailedDayAlarmsAdapter);
         alarmsListView.setEmptyView(findViewById(R.id.emptyListView));
     }
 
@@ -115,5 +120,16 @@ public class DetailedDayActivity extends AppCompatActivity {
             case 6 : return Alarm.Day.FRIDAY;
             default : return Alarm.Day.SATURDAY;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void onAlarmEditedEvent(AlarmEditedEvent alarmEditedEvent){
+        detailedDayAlarmsAdapter.notifyDataSetChanged();
     }
 }
