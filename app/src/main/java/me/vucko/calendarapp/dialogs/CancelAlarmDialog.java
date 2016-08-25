@@ -13,6 +13,7 @@ import java.util.Calendar;
 
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmDeletedEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmEditedEvent;
 
 public class CancelAlarmDialog extends Dialog {
@@ -33,7 +34,6 @@ public class CancelAlarmDialog extends Dialog {
         setContentView(R.layout.custom_cancel_alarm_dialog);
 
         Button todayButton = (Button) findViewById(R.id.todayButton);
-        Button allDayOfWeeksButton = (Button) findViewById(R.id.allDayOfWeeksButton);
         Button entireAlarmButton = (Button) findViewById(R.id.entireAlarmButton);
 
         todayButton.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +43,14 @@ public class CancelAlarmDialog extends Dialog {
                 Alarm.Day thisDay = Alarm.Day.values()[calendar.getTime().getDay()];
                 alarm.removeDay(thisDay);
                 EventBus.getDefault().post(new AlarmEditedEvent(alarm));
+                dismiss();
+            }
+        });
+
+        entireAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new AlarmDeletedEvent(alarm));
                 dismiss();
             }
         });

@@ -76,12 +76,17 @@
             android:textColor="@color/black"
             android:text="@string/eventsBeforeFirstAlarmBy" />
 
-        <TimePicker
-            android:id="@+id/eventsBeforeFirstAlarmByTimePicker"
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/eventsBeforeFirstAlarmByNumberPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:timePickerMode="spinner"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            app:np_width="64"
+            app:np_height="180"
+            app:np_dividerColor="@color/colorPrimary"
+            app:np_max="59"
+            app:np_min="0"
+            app:np_textColor="@color/colorPrimary"/>
 
         <CheckBox
             android:id="@+id/excludeAlarmsBeforeCheckbox"

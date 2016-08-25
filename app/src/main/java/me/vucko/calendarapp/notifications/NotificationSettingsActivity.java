@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TimePicker;
 
-import java.sql.Time;
+import com.shawnlin.numberpicker.NumberPicker;
 
 import me.vucko.calendarapp.R;
 
@@ -73,16 +73,22 @@ public class NotificationSettingsActivity extends AppCompatActivity {
             });
         }
 
-        final TimePicker eventsBeforeFirstAlarmByTimePicker = (TimePicker) findViewById(R.id.eventsBeforeFirstAlarmByTimePicker);
+        final NumberPicker eventsBeforeFirstAlarmByTimePicker = (NumberPicker) findViewById(R.id.eventsBeforeFirstAlarmByNumberPicker);
 
         if (eventsBeforeFirstAlarmByTimePicker != null) {
-            eventsBeforeFirstAlarmByTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            eventsBeforeFirstAlarmByTimePicker.setOnValueChangedListener(new android.widget.NumberPicker.OnValueChangeListener() {
                 @Override
-                public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                    int minutes = eventsBeforeFirstAlarmByTimePicker.getCurrentHour() * 60 + eventsBeforeFirstAlarmByTimePicker.getCurrentMinute();
-                    editor.putInt("eventsBeforeFirstAlarmByTimePicker", minutes);
+                public void onValueChange(android.widget.NumberPicker picker, int oldVal, int newVal) {
+                    editor.putInt("eventsBeforeFirstAlarmByTimePicker", newVal);
                 }
             });
+//            eventsBeforeFirstAlarmByTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+//                @Override
+//                public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+//                    int minutes = eventsBeforeFirstAlarmByTimePicker.getCurrentHour() * 60 + eventsBeforeFirstAlarmByTimePicker.getCurrentMinute();
+//                    editor.putInt("eventsBeforeFirstAlarmByTimePicker", minutes);
+//                }
+//            });
         }
 
         CheckBox excludeAlarmsBeforeCheckbox = (CheckBox) findViewById(R.id.excludeAlarmsBeforeCheckbox);

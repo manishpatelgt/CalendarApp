@@ -26,6 +26,7 @@ import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 import me.vucko.calendarapp.dialogs.CancelAlarmDialog;
 import me.vucko.calendarapp.dialogs.EditEventAlarmDialog;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmDeletedEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmEditedEvent;
 
 public class DetailedDayAlarmsAdapter extends BaseAdapter {
@@ -116,6 +117,14 @@ public class DetailedDayAlarmsAdapter extends BaseAdapter {
         Database.init(context);
         Database.update(alarmEditedEvent.getAlarm());
         alarms.remove(alarmEditedEvent.getAlarm());
+        callAlarmScheduleService();
+        notifyDataSetChanged();
+    }
+
+    public void onAlarmDeletedEvent(AlarmDeletedEvent alarmDeletedEvent){
+        Database.init(context);
+        Database.deleteEntry(alarmDeletedEvent.getAlarm());
+        alarms.remove(alarmDeletedEvent.getAlarm());
         callAlarmScheduleService();
         notifyDataSetChanged();
     }
