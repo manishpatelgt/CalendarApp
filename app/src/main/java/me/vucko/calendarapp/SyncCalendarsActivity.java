@@ -39,6 +39,8 @@ import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -50,6 +52,7 @@ import java.util.Locale;
 
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -358,7 +361,7 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
         protected void onPostExecute(List<String> output) {
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
+            boolean newAlarmAdded = false;
             mProgress.hide();
             if (output != null && output.size() != 0) {
                 Database.init(getApplicationContext());
@@ -405,10 +408,13 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                         Database.create(alarm1);
 
                         alarm.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
-
+                        newAlarmAdded = true;
                     }
                 }
-                sendNotification();
+                EventBus.getDefault().post(new AlarmChangeEvent());
+                if (newAlarmAdded) {
+                    sendNotification();
+                }
             }
         }
 

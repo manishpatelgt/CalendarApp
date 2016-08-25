@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +30,7 @@ import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
 
 public class FirstFragment extends Fragment {
 
@@ -81,6 +84,7 @@ public class FirstFragment extends Fragment {
                 Database.create(alarm);
                 callAlarmScheduleService();
                 updateAlarmList();
+                EventBus.getDefault().post(new AlarmChangeEvent());
             }
         });
         Button moreSettingsButton = (Button) view.findViewById(R.id.moreSettingsButton);

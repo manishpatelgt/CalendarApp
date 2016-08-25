@@ -2,7 +2,9 @@ package me.vucko.calendarapp.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -13,16 +15,21 @@ import java.util.Calendar;
 
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmDeletedEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmEditedEvent;
 
 public class CancelAlarmDialog extends Dialog {
 
     private Alarm alarm;
+    private Alarm.Day day;
 
-    public CancelAlarmDialog(Context context, Alarm alarm) {
+    public CancelAlarmDialog(Context context, Alarm alarm, Alarm.Day day) {
         super(context);
         this.alarm = alarm;
+        this.day = day;
         setCancelable(true);
     }
 
@@ -39,10 +46,12 @@ public class CancelAlarmDialog extends Dialog {
         todayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                Alarm.Day thisDay = Alarm.Day.values()[calendar.getTime().getDay()];
-                alarm.removeDay(thisDay);
+                Database.init(getContext());
+                alarm.removeDay(day);
+                Database.update(alarm);
                 EventBus.getDefault().post(new AlarmEditedEvent(alarm));
+                EventBus.getDefault().post(new AlarmChangeEvent());
+                callAlarmScheduleService();
                 dismiss();
             }
         });
@@ -50,9 +59,18 @@ public class CancelAlarmDialog extends Dialog {
         entireAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Database.init(getContext());
+                Database.deleteEntry(alarm);
                 EventBus.getDefault().post(new AlarmDeletedEvent(alarm));
+                EventBus.getDefault().post(new AlarmChangeEvent());
+                callAlarmScheduleService();
                 dismiss();
             }
         });
+    }
+
+    protected void callAlarmScheduleService() {
+        Intent AlarmServiceIntent = new Intent(getContext(), AlarmServiceBroadcastReciever.class);
+        getContext().sendBroadcast(AlarmServiceIntent, null);
     }
 }

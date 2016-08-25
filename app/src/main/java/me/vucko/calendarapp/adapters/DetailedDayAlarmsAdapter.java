@@ -33,10 +33,12 @@ public class DetailedDayAlarmsAdapter extends BaseAdapter {
 
     private List<Alarm> alarms = new ArrayList<>();
     private Context context;
+    private Alarm.Day day;
 
-    public DetailedDayAlarmsAdapter(Context context, List<Alarm> alarms) {
+    public DetailedDayAlarmsAdapter(Context context, List<Alarm> alarms, Alarm.Day day) {
         this.context = context;
         this.alarms = alarms;
+        this.day = day;
         EventBus.getDefault().register(this);
     }
 
@@ -99,7 +101,7 @@ public class DetailedDayAlarmsAdapter extends BaseAdapter {
         xButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CancelAlarmDialog cancelAlarmDialog = new CancelAlarmDialog(context, alarm);
+                CancelAlarmDialog cancelAlarmDialog = new CancelAlarmDialog(context, alarm, day);
                 cancelAlarmDialog.show();
 //                Database.init(context);
 //                Database.deleteEntry(alarms.get(position));

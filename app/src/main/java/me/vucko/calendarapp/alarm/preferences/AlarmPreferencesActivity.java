@@ -38,6 +38,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.Calendar;
 
 import me.vucko.calendarapp.R;
@@ -45,6 +48,9 @@ import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.BaseActivity;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Key;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmBooleanEditEvent;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmVolumeEditEvent;
 
 public class AlarmPreferencesActivity extends BaseActivity {
 
@@ -65,6 +71,7 @@ public class AlarmPreferencesActivity extends BaseActivity {
 		assert actionBar != null;
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.alarm_preferences);
+		EventBus.getDefault().register(this);
 
 		TimePicker timePicker = (TimePicker) findViewById(R.id.timePickerMoreSettings);
 
@@ -119,6 +126,9 @@ public class AlarmPreferencesActivity extends BaseActivity {
 					boolean checked = !checkedTextView.isChecked();
 					((CheckedTextView) v).setChecked(checked);
 					switch (alarmPreference.getKey()) {
+					case ALARM_SNOOZE:
+						alarm.setSnooze(checked);
+						break;
 					case ALARM_ACTIVE:
 						alarm.setAlarmActive(checked);
 						break;
@@ -175,10 +185,6 @@ public class AlarmPreferencesActivity extends BaseActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							switch (alarmPreference.getKey()) {
-							case ALARM_DIFFICULTY:
-								Alarm.Difficulty d = Alarm.Difficulty.values()[which];
-								alarm.setDifficulty(d);
-								break;
 							case ALARM_TONE:
 								alarm.setAlarmTonePath(alarmPreferenceListAdapter.getAlarmTonePaths()[which]);
 								if (alarm.getAlarmTonePath() != null) {
@@ -302,6 +308,12 @@ public class AlarmPreferencesActivity extends BaseActivity {
 	}
 
 	@Override
+	protected void onDestroy() {
+		EventBus.getDefault().unregister(this);
+		super.onDestroy();
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_item_save:
@@ -311,6 +323,7 @@ public class AlarmPreferencesActivity extends BaseActivity {
 			} else {
 				Database.update(getMathAlarm());
 			}
+			EventBus.getDefault().post(new AlarmChangeEvent());
 			callMathAlarmScheduleService();
 			Toast.makeText(AlarmPreferencesActivity.this, getMathAlarm().getTimeUntilNextAlarmMessage(), Toast.LENGTH_LONG).show();
 			finish();
@@ -375,5 +388,22 @@ public class AlarmPreferencesActivity extends BaseActivity {
 	public void onClick(View v) {
 		// super.onClick(v);
 
+	}
+
+	@Subscribe
+	public void onAlarmBooleanEditEvent(AlarmBooleanEditEvent alarmBooleanEditEvent) {
+		switch (alarmBooleanEditEvent.getKey()) {
+			case ALARM_VIBRATE:
+				alarm.setVibrate(alarmBooleanEditEvent.getIsChecked());
+				break;
+			case ALARM_SNOOZE:
+				alarm.setSnooze(alarmBooleanEditEvent.getIsChecked());
+				break;
+		}
+	}
+
+	@Subscribe
+	public void onAlarmVolumeEditEvent(AlarmVolumeEditEvent alarmVolumeEditEvent) {
+		alarm.setVolume(alarmVolumeEditEvent.getVolume());
 	}
 }

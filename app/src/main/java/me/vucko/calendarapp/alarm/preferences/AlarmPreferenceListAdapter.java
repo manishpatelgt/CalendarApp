@@ -20,9 +20,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,6 +35,9 @@ import java.util.List;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Type;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmBooleanEditEvent;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmVolumeEditEvent;
 
 public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializable {
 
@@ -45,8 +52,10 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 	
 	public AlarmPreferenceListAdapter(Context context, Alarm alarm) {
 		setContext(context);
-		
-		
+		if (!EventBus.getDefault().isRegistered(context)) {
+			EventBus.getDefault().register(context);
+		}
+
 //		(new Runnable(){
 //
 //			@Override
@@ -95,7 +104,7 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		AlarmPreference alarmPreference = (AlarmPreference) getItem(position);
+		final AlarmPreference alarmPreference = (AlarmPreference) getItem(position);
 		LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 		switch (alarmPreference.getType()) {
 		case BOOLEAN:
@@ -106,6 +115,12 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 			Switch mySwitch = (Switch) convertView.findViewById(R.id.mySwitch);
 			textView.setText(alarmPreference.getTitle());
 			mySwitch.setChecked((Boolean) alarmPreference.getValue());
+			mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					EventBus.getDefault().post(new AlarmBooleanEditEvent(isChecked, alarmPreference.getKey()));
+				}
+			});
 			break;
 
 		case SEEK_BAR:
@@ -117,7 +132,7 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 			seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 				@Override
 				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-					alarm.setVolume(position);
+					EventBus.getDefault().post(new AlarmVolumeEditEvent(progress, alarmPreference.getKey()));
 				}
 
 				@Override
@@ -162,8 +177,11 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 				case ALARM_NAME:
 					alarm.setAlarmName((String) preference.getValue());
 					break;
-				case ALARM_DIFFICULTY:
-					alarm.setDifficulty(Alarm.Difficulty.valueOf((String)preference.getValue()));
+				case ALARM_VOLUME:
+					alarm.setVolume((Integer) preference.getValue());
+					break;
+				case ALARM_SNOOZE:
+					alarm.setSnooze((Boolean) preference.getValue());
 					break;
 				case ALARM_TONE:
 					alarm.setAlarmTonePath((String) preference.getValue());
@@ -199,9 +217,8 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 			preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_TONE, "Tone", getAlarmTones()[0],alarmTones, null, Type.LIST));
 		}
 
-		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_DIFFICULTY,"Snooze", null, null, alarm.getSnooze(), Type.BOOLEAN));
+		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_SNOOZE,"Snooze", null, null, alarm.getSnooze(), Type.BOOLEAN));
 	}
-
 	
 	public Context getContext() {
 		return context;

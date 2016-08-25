@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
 
 public class AlarmsAdapter extends BaseAdapter {
 
@@ -84,6 +87,7 @@ public class AlarmsAdapter extends BaseAdapter {
                 alarms.remove(position);
                 callAlarmScheduleService();
                 notifyDataSetChanged();
+                EventBus.getDefault().post(new AlarmChangeEvent());
             }
         });
 

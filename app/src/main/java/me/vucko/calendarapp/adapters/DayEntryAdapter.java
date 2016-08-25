@@ -91,4 +91,9 @@ public class DayEntryAdapter extends ArrayAdapter<CalendarDay> {
         TextView dayLetterTextView;
         TextView dayDateTextView;
     }
+
+    public void setCalendarDays(CalendarDay[] objects) {
+        this.calendarDays.clear();
+        this.calendarDays.addAll(Arrays.asList(objects));
+    }
 }
