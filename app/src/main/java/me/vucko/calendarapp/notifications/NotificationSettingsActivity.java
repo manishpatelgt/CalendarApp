@@ -29,11 +29,14 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         final SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (notificationTimePicked != null) {
+            notificationTimePicked.setCurrentHour(sharedPreferences.getInt("notificationTimePicker", 0) / 60);
+            notificationTimePicked.setCurrentMinute(sharedPreferences.getInt("notificationTimePicker", 0) % 60);
             notificationTimePicked.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
                 @Override
                 public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                     int minutes = notificationTimePicked.getCurrentHour() * 60 + notificationTimePicked.getCurrentMinute();
                     editor.putInt("notificationTimePicker", minutes);
+                    editor.apply();
                 }
             });
         }
@@ -46,6 +49,7 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     editor.putBoolean("eventsBeforeCheckbox", isChecked);
+                    editor.apply();
                 }
             });
         }
@@ -53,11 +57,14 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         final TimePicker eventsBeforeTimePicker = (TimePicker) findViewById(R.id.eventsBeforeTimePicker);
 
         if (eventsBeforeTimePicker != null) {
+            eventsBeforeTimePicker.setCurrentHour(sharedPreferences.getInt("eventsBeforeTimePicker", 0) / 60);
+            eventsBeforeTimePicker.setCurrentMinute(sharedPreferences.getInt("eventsBeforeTimePicker", 0) % 60);
             eventsBeforeTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
                 @Override
                 public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                     int minutes = eventsBeforeTimePicker.getCurrentHour() * 60 + eventsBeforeTimePicker.getCurrentMinute();
                     editor.putInt("eventsBeforeTimePicker", minutes);
+                    editor.apply();
                 }
             });
         }
@@ -69,6 +76,7 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     editor.putBoolean("eventsBeforeFirstAlarmByCheckbox", isChecked);
+                    editor.apply();
                 }
             });
         }
@@ -76,10 +84,12 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         final NumberPicker eventsBeforeFirstAlarmByTimePicker = (NumberPicker) findViewById(R.id.eventsBeforeFirstAlarmByNumberPicker);
 
         if (eventsBeforeFirstAlarmByTimePicker != null) {
+            eventsBeforeFirstAlarmByTimePicker.setValue(sharedPreferences.getInt("eventsBeforeFirstAlarmByTimePicker", 0));
             eventsBeforeFirstAlarmByTimePicker.setOnValueChangedListener(new android.widget.NumberPicker.OnValueChangeListener() {
                 @Override
                 public void onValueChange(android.widget.NumberPicker picker, int oldVal, int newVal) {
                     editor.putInt("eventsBeforeFirstAlarmByTimePicker", newVal);
+                    editor.apply();
                 }
             });
 //            eventsBeforeFirstAlarmByTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -98,6 +108,7 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     editor.putBoolean("excludeAlarmsBeforeCheckbox", isChecked);
+                    editor.apply();
                 }
             });
         }
@@ -105,11 +116,14 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         final TimePicker excludeAlarmsBeforeTimePicker = (TimePicker) findViewById(R.id.excludeAlarmsBeforeTimePicker);
 
         if (excludeAlarmsBeforeTimePicker != null) {
+            excludeAlarmsBeforeTimePicker.setCurrentHour(sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 0) / 60);
+            excludeAlarmsBeforeTimePicker.setCurrentMinute(sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 0) % 60);
             excludeAlarmsBeforeTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
                 @Override
                 public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                     int minutes = excludeAlarmsBeforeTimePicker.getCurrentHour() * 60 + excludeAlarmsBeforeTimePicker.getCurrentMinute();
-                    editor.putInt("excludeAlarmsBeforeTimePicker    ", minutes);
+                    editor.putInt("excludeAlarmsBeforeTimePicker", minutes);
+                    editor.apply();
                 }
             });
         }
