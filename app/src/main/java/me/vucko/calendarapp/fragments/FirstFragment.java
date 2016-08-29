@@ -92,8 +92,11 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AlarmPreferencesActivity.class);
-                intent.putExtra("timePickerTimeHour", timePicker.getCurrentHour());
-                intent.putExtra("timePickerTimeMinute", timePicker.getCurrentMinute());
+                Alarm alarm = new Alarm();
+                alarm.setAlarmTime(timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute());
+                intent.putExtra("alarm", alarm);
+//                intent.putExtra("timePickerTimeHour", timePicker.getCurrentHour());
+//                intent.putExtra("timePickerTimeMinute", timePicker.getCurrentMinute());
                 startActivityForResult(intent, 1);
             }
         });

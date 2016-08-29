@@ -302,9 +302,7 @@ public class AlarmPreferencesActivity extends BaseActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean result = super.onCreateOptionsMenu(menu);
-		menu.findItem(R.id.menu_item_new).setVisible(false);
-		return result;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override

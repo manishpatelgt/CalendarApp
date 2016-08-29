@@ -3,18 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="me.vucko.calendarapp.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_item_new"
-        android:title="@string/menu_item_new"
-        android:icon="@drawable/glyphicons_432_plus"
-        app:showAsAction="ifRoom">
-    </item>
-    <item
         android:id="@+id/menu_item_save"
         android:title="@string/menu_item_save"
         android:icon="@drawable/glyphicons_443_floppy_disk"

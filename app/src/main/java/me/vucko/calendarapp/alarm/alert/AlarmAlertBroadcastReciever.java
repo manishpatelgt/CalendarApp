@@ -11,12 +11,18 @@
  */
 package me.vucko.calendarapp.alarm.alert;
 
-import me.vucko.calendarapp.alarm.Alarm;
-import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import java.util.Calendar;
+
+import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 
 public class AlarmAlertBroadcastReciever extends BroadcastReceiver {
 
@@ -26,20 +32,31 @@ public class AlarmAlertBroadcastReciever extends BroadcastReceiver {
 				context,
 				AlarmServiceBroadcastReciever.class);
 		context.sendBroadcast(mathAlarmServiceIntent, null);
-		
-		StaticWakeLock.lockOn(context);
-		Bundle bundle = intent.getExtras();
-		final Alarm alarm = (Alarm) bundle.getSerializable("alarm");
 
-		Intent mathAlarmAlertActivityIntent;
+        Log.i("onReceive", "BRTTTT USAO sam ovde i sad cemo vidit ocu li zvonit");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        int time = sharedPreferences.getInt("eventsBeforeTimePicker", 0);
+        if (sharedPreferences.getBoolean("eventsBeforeCheckbox", false) && shouldSoundTheAlarm(time, Calendar.getInstance())) {
+            StaticWakeLock.lockOn(context);
+            Bundle bundle = intent.getExtras();
+            final Alarm alarm = (Alarm) bundle.getSerializable("alarm");
 
-		mathAlarmAlertActivityIntent = new Intent(context, AlarmAlertActivity.class);
+            Intent mathAlarmAlertActivityIntent;
 
-		mathAlarmAlertActivityIntent.putExtra("alarm", alarm);
+            mathAlarmAlertActivityIntent = new Intent(context, AlarmAlertActivity.class);
 
-		mathAlarmAlertActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mathAlarmAlertActivityIntent.putExtra("alarm", alarm);
 
-		context.startActivity(mathAlarmAlertActivityIntent);
-	}
+            mathAlarmAlertActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            context.startActivity(mathAlarmAlertActivityIntent);
+        }
+    }
+
+	private boolean shouldSoundTheAlarm(int totalTime, Calendar time){
+		int currentHour = time.getTime().getHours();
+		int currentMinute = time.getTime().getMinutes();
+        return (totalTime) < (currentHour * 60 + currentMinute);
+    }
 
 }
