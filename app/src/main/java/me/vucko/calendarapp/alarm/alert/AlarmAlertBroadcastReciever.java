@@ -11,6 +11,8 @@
  */
 package me.vucko.calendarapp.alarm.alert;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +21,18 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Calendar;
+import java.util.Date;
 
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
+import me.vucko.calendarapp.domain.eventbus_events.SyncEvents;
 
 public class AlarmAlertBroadcastReciever extends BroadcastReceiver {
+
+    private static final int MILLISECONDS_IN_DAY = 60*60*24*1000;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -35,21 +43,43 @@ public class AlarmAlertBroadcastReciever extends BroadcastReceiver {
 
         Log.i("onReceive", "BRTTTT USAO sam ovde i sad cemo vidit ocu li zvonit");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        int time = sharedPreferences.getInt("eventsBeforeTimePicker", 0);
-        if (sharedPreferences.getBoolean("eventsBeforeCheckbox", false) && shouldSoundTheAlarm(time, Calendar.getInstance())) {
-            StaticWakeLock.lockOn(context);
-            Bundle bundle = intent.getExtras();
-            final Alarm alarm = (Alarm) bundle.getSerializable("alarm");
+        if (sharedPreferences.getBoolean("nijeAlarm", false)) {
+            EventBus.getDefault().post(new SyncEvents());
 
-            Intent mathAlarmAlertActivityIntent;
+            Date d = new Date();
+            Calendar today = Calendar.getInstance();
+            today.setTime(d);
+            today.set(Calendar.HOUR_OF_DAY, sharedPreferences.getInt("notificationTimePicker", 0) / 60);
+            today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60 - 1);
+            today.set(Calendar.SECOND, 0);
+            today.set(Calendar.MILLISECOND, 0);
+            today.add(Calendar.MILLISECOND, MILLISECONDS_IN_DAY);
 
-            mathAlarmAlertActivityIntent = new Intent(context, AlarmAlertActivity.class);
+            Intent myIntent = new Intent(context, AlarmAlertBroadcastReciever.class);
+            myIntent.putExtra("nijeAlarm", true);
 
-            mathAlarmAlertActivityIntent.putExtra("alarm", alarm);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent,PendingIntent.FLAG_CANCEL_CURRENT);
 
-            mathAlarmAlertActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
-            context.startActivity(mathAlarmAlertActivityIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, today.getTimeInMillis(), pendingIntent);
+        } else {
+            int time = sharedPreferences.getInt("eventsBeforeTimePicker", 0);
+            if (sharedPreferences.getBoolean("eventsBeforeCheckbox", false) && shouldSoundTheAlarm(time, Calendar.getInstance())) {
+                StaticWakeLock.lockOn(context);
+                Bundle bundle = intent.getExtras();
+                final Alarm alarm = (Alarm) bundle.getSerializable("alarm");
+
+                Intent mathAlarmAlertActivityIntent;
+
+                mathAlarmAlertActivityIntent = new Intent(context, AlarmAlertActivity.class);
+
+                mathAlarmAlertActivityIntent.putExtra("alarm", alarm);
+
+                mathAlarmAlertActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                context.startActivity(mathAlarmAlertActivityIntent);
+            }
         }
     }
 

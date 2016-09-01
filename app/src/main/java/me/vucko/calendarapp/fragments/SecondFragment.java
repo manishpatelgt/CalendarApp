@@ -34,7 +34,7 @@ import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
 
 public class SecondFragment extends Fragment {
 
-    private static final long MILLISECONDS_IN_DAY = 60*60*24*1000;
+    private static final int MILLISECONDS_IN_DAY = 60*60*24*1000;
 
     ListView dayEntryListView;
     DayEntryAdapter dayEntryAdapter;
@@ -290,7 +290,9 @@ public class SecondFragment extends Fragment {
     }
 
     public Calendar setToMidnight(Calendar calendar) {
-        calendar.set(Calendar.HOUR, 0);
+        calendar.add(Calendar.MILLISECOND, -MILLISECONDS_IN_DAY);
+        calendar.set(Calendar.HOUR, 12);
+        calendar.set(Calendar.AM_PM, Calendar.PM);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);

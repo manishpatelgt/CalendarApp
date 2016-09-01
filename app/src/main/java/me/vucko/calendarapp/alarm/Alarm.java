@@ -92,6 +92,7 @@ public class Alarm implements Serializable {
 	private int volume = 50;
 	private Boolean event = false;
 	private Calendar alarmEventTime = Calendar.getInstance();
+	private Boolean oneTime = false;
 	
 	public Alarm() {
 
@@ -317,6 +318,14 @@ public class Alarm implements Serializable {
 		this.event = event;
 	}
 
+	public Boolean getOneTime() {
+		return oneTime;
+	}
+
+	public void setOneTime(Boolean oneTime) {
+		this.oneTime = oneTime;
+	}
+
 	public String getRepeatDaysString() {
 		StringBuilder daysStringBuilder = new StringBuilder();
 		if(getDays().length == Day.values().length){
@@ -357,7 +366,7 @@ public class Alarm implements Serializable {
 
 		AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
-		alarmManager.set(AlarmManager.RTC_WAKEUP, getAlarmTime().getTimeInMillis(), pendingIntent);					
+		alarmManager.set(AlarmManager.RTC_WAKEUP, getAlarmTime().getTimeInMillis(), pendingIntent);
 	}
 	
 	public String getTimeUntilNextAlarmMessage(){

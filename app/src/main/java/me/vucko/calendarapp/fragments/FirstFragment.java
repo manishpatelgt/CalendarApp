@@ -1,11 +1,15 @@
 package me.vucko.calendarapp.fragments;
 
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -20,6 +24,7 @@ import android.widget.TimePicker;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,6 +32,7 @@ import me.vucko.calendarapp.MainActivity;
 import me.vucko.calendarapp.R;
 import me.vucko.calendarapp.adapters.AlarmsAdapter;
 import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.alarm.alert.AlarmAlertBroadcastReciever;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreferencesActivity;
 import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
@@ -34,6 +40,7 @@ import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
 
 public class FirstFragment extends Fragment {
 
+    private static final int MILLISECONDS_IN_DAY = 60*60*24*1000;
     AlarmsAdapter alarmsAdapter;
     TextView emptyTextView;
 
@@ -58,6 +65,30 @@ public class FirstFragment extends Fragment {
         }
         alarmsAdapter = new AlarmsAdapter(context, alarms);
         alarmsAdapter.notifyDataSetChanged();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        if (!sharedPreferences.getBoolean("cronJob", false)) {
+            Date d = new Date();
+            Calendar today = Calendar.getInstance();
+            today.setTime(d);
+            today.set(Calendar.HOUR_OF_DAY, sharedPreferences.getInt("notificationTimePicker", 0) / 60);
+            today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60 - 1);
+            today.set(Calendar.SECOND, 0);
+            today.set(Calendar.MILLISECOND, 0);
+
+            Intent myIntent = new Intent(context, AlarmAlertBroadcastReciever.class);
+            myIntent.putExtra("nijeAlarm", true);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+
+            AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+
+            alarmManager.set(AlarmManager.RTC_WAKEUP, today.getTimeInMillis(), pendingIntent);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("cronJob", true);
+            editor.apply();
+        }
         super.onAttach(context);
     }
 
@@ -80,6 +111,7 @@ public class FirstFragment extends Fragment {
                 int minute = timePicker.getCurrentMinute();
                 Alarm alarm = new Alarm(getNextDay(hour, minute));
                 alarm.setAlarmTime(hour + ":" + minute);
+                alarm.setOneTime(true);
                 Database.init(getActivity());
                 Database.create(alarm);
                 callAlarmScheduleService();

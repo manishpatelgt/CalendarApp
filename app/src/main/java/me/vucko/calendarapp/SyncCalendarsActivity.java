@@ -40,6 +40,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -47,12 +48,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
+import me.vucko.calendarapp.domain.eventbus_events.SyncEvents;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -76,6 +79,8 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
         setContentView(R.layout.activity_sync_calendars);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        EventBus.getDefault().register(this);
 
         assert toolbar != null;
         toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha));
@@ -391,6 +396,7 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                     if (!exist) {
                         Alarm alarm = new Alarm();
                         alarm.setEvent(true);
+                        alarm.setOneTime(true);
                         alarm.setAlarmName(name);
                         alarm.setAlarmEventTime(eventCalendar);
                         Database.create(alarm);
@@ -398,16 +404,17 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                         eventCalendar.add(java.util.Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicked", 0) * (-1));
                         int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
                         if (!sharedPreferences.getBoolean("eventsBeforeCheckbox", false) ||
-                                (eventCalendar.get(java.util.Calendar.HOUR) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) > excludeAlarmsBeforeTimePicker) {
+                                (eventCalendar.get(Calendar.HOUR_OF_DAY) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) < excludeAlarmsBeforeTimePicker) {
                             continue;
                         }
 
                         Alarm alarm1 = new Alarm();
                         alarm1.setAlarmName(name);
+                        alarm1.setOneTime(true);
                         alarm1.setAlarmTime(eventCalendar);
+                        alarm1.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
                         Database.create(alarm1);
 
-                        alarm.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
                         newAlarmAdded = true;
                     }
                 }
@@ -474,4 +481,14 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
         }
     }
 
+    @Subscribe
+    public void onSyncEvents(SyncEvents syncEvents) {
+        getResultsFromApi();
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
 }

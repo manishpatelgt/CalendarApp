@@ -29,7 +29,7 @@ import me.vucko.calendarapp.domain.eventbus_events.AlarmEditedEvent;
 public class DetailedDayActivity extends AppCompatActivity {
 
     private DetailedDayAlarmsAdapter detailedDayAlarmsAdapter;
-    private static final long MILLISECONDS_IN_DAY = 60*60*24*1000;
+    private static final int MILLISECONDS_IN_DAY = 60*60*24*1000;
     private int position = 1;
 
     @Override
@@ -69,7 +69,14 @@ public class DetailedDayActivity extends AppCompatActivity {
         Date d = new Date();
         long x = d.getTime();
         Date start = new Date(x+ MILLISECONDS_IN_DAY * position);
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(start);
         Date end = new Date(x+ MILLISECONDS_IN_DAY * (position + 1));
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(end);
+
+        setToMidnight(startCalendar);
+        setToMidnight(endCalendar);
 
         if (customDateTime != null) {
             SimpleDateFormat customDateFormat = new SimpleDateFormat("EEEEEEE, MMMM dd", Locale.getDefault());
@@ -82,7 +89,7 @@ public class DetailedDayActivity extends AppCompatActivity {
         for (int i = 0; i < alarms.size(); i++) {
             long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
             if (alarms.get(i).getEvent()) {
-                if ((start.getTime() < eventMillis) && (eventMillis < end.getTime())) {
+                if ((startCalendar.getTimeInMillis() < eventMillis) && (eventMillis < endCalendar.getTimeInMillis())) {
                     j++;
                     if ((j == 1) && (event1 != null)) {
                         event1.setText(alarms.get(i).getAlarmName() + ' ' + simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
@@ -146,7 +153,14 @@ public class DetailedDayActivity extends AppCompatActivity {
         Date d = new Date();
         long x = d.getTime();
         Date start = new Date(x+ MILLISECONDS_IN_DAY * position);
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(start);
         Date end = new Date(x+ MILLISECONDS_IN_DAY * (position + 1));
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(end);
+
+        setToMidnight(startCalendar);
+        setToMidnight(endCalendar);
 
         if (customDateTime != null) {
             SimpleDateFormat customDateFormat = new SimpleDateFormat("EEEEEEE, MMMM dd", Locale.getDefault());
@@ -159,7 +173,7 @@ public class DetailedDayActivity extends AppCompatActivity {
         for (int i = 0; i < alarms.size(); i++) {
             long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
             if (alarms.get(i).getEvent()) {
-                if ((start.getTime() < eventMillis) && (eventMillis < end.getTime())) {
+                if ((startCalendar.getTimeInMillis() < eventMillis) && (eventMillis < endCalendar.getTimeInMillis())) {
                     j++;
                     if ((j == 1) && (event1 != null)) {
                         event1.setText(alarms.get(i).getAlarmName() + ' ' + simpleDateFormat.format(alarms.get(i).getAlarmEventTime().getTime()));
@@ -184,5 +198,16 @@ public class DetailedDayActivity extends AppCompatActivity {
         }
         detailedDayAlarmsAdapter.setAlarms(alarmList);
         detailedDayAlarmsAdapter.notifyDataSetChanged();
+    }
+
+    public Calendar setToMidnight(Calendar calendar) {
+        calendar.add(Calendar.MILLISECOND, -MILLISECONDS_IN_DAY);
+        calendar.set(Calendar.HOUR, 12);
+        calendar.set(Calendar.AM_PM, Calendar.PM);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return  calendar;
     }
 }

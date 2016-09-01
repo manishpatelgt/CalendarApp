@@ -46,7 +46,7 @@ public class Database extends SQLiteOpenHelper {
 	static SQLiteDatabase database = null;
 	
 	static final String DATABASE_NAME = "DB";
-	static final int DATABASE_VERSION = 5;
+	static final int DATABASE_VERSION = 6;
 	
 	public static final String ALARM_TABLE = "alarm";
 	public static final String COLUMN_ALARM_ID = "_id";
@@ -61,6 +61,7 @@ public class Database extends SQLiteOpenHelper {
 	public static final String COLUMN_ALARM_EVENT_TIME = "alarm_event_time";
 	public static final String COLUMN_ALARM_SNOOZE = "alarm_snooze";
 	public static final String COLUMN_ALARM_VOLUME = "alarm_volume";
+	public static final String COLUMN_ALARM_ONETIME = "alarm_one_time";
 
 	public static void init(Context context) {
 		if (null == instance) {
@@ -109,6 +110,7 @@ public class Database extends SQLiteOpenHelper {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault());
 		cv.put(COLUMN_ALARM_EVENT_TIME, df.format(alarm.getAlarmEventTime().getTime()));
 		cv.put(COLUMN_ALARM_VOLUME, alarm.getVolume());
+		cv.put(COLUMN_ALARM_ONETIME, alarm.getOneTime());
 
 		return getDatabase().insert(ALARM_TABLE, null, cv);
 	}
@@ -138,6 +140,7 @@ public class Database extends SQLiteOpenHelper {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault());
 		cv.put(COLUMN_ALARM_EVENT_TIME, df.format(alarm.getAlarmEventTime().getTime()));
 		cv.put(COLUMN_ALARM_VOLUME, alarm.getVolume());
+		cv.put(COLUMN_ALARM_ONETIME, alarm.getOneTime());
 
 		return getDatabase().update(ALARM_TABLE, cv, "_id=" + alarm.getId(), null);
 	}
@@ -168,6 +171,7 @@ public class Database extends SQLiteOpenHelper {
 				COLUMN_ALARM_SNOOZE,
 				COLUMN_ALARM_EVENT_TIME,
 				COLUMN_ALARM_VOLUME,
+				COLUMN_ALARM_ONETIME,
 				};
 		Cursor c = getDatabase().query(ALARM_TABLE, columns, COLUMN_ALARM_ID+"="+id, null, null, null,
 				null);
@@ -214,6 +218,7 @@ public class Database extends SQLiteOpenHelper {
 			}
 			alarm.setSnooze(c.getInt(10) == 1);
 			alarm.setVolume(c.getInt(11));
+			alarm.setOneTime(c.getInt(12) == 1);
 		}
 		c.close();
 		return alarm;
@@ -234,6 +239,7 @@ public class Database extends SQLiteOpenHelper {
 				COLUMN_ALARM_EVENT_TIME,
 				COLUMN_ALARM_SNOOZE,
 				COLUMN_ALARM_VOLUME,
+				COLUMN_ALARM_ONETIME,
 				};
 		return getDatabase().query(ALARM_TABLE, columns, null, null, null, null,
 				null);
@@ -258,7 +264,8 @@ public class Database extends SQLiteOpenHelper {
 				+ COLUMN_ALARM_EVENT + " INTEGER NOT NULL, "
 				+ COLUMN_ALARM_EVENT_TIME + " TEXT NOT NULL, "
 				+ COLUMN_ALARM_SNOOZE + " INTEGER NOT NUll, "
-				+ COLUMN_ALARM_VOLUME + " INTEGER NOT NULL)");
+				+ COLUMN_ALARM_VOLUME + " INTEGER NOT NULL, "
+				+ COLUMN_ALARM_ONETIME + " INTEGER NOT NULL) ");
 	}
 
 	@Override
@@ -323,6 +330,7 @@ public class Database extends SQLiteOpenHelper {
 				}
 				alarm.setSnooze(cursor.getInt(10) == 1);
 				alarm.setVolume(cursor.getInt(11));
+				alarm.setOneTime(cursor.getInt(12) == 1);
 				
 				alarms.add(alarm);
 

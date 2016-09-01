@@ -13,8 +13,12 @@ package me.vucko.calendarapp.alarm.alert;
 
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.R;
+import me.vucko.calendarapp.alarm.database.Database;
+import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -117,6 +121,11 @@ public class AlarmAlertActivity extends Activity implements OnClickListener {
 
 		// Toast.makeText(this, answerString, Toast.LENGTH_LONG).show();
 
+		if  (alarm.getOneTime()) {
+			Database.init(this);
+			Database.deleteEntry(alarm);
+			callAlarmScheduleService();
+		}
 		startAlarm();
 
 	}
@@ -212,5 +221,10 @@ public class AlarmAlertActivity extends Activity implements OnClickListener {
 
 		}
 		this.finish();
+	}
+
+	protected void callAlarmScheduleService() {
+		Intent AlarmServiceIntent = new Intent(this, AlarmServiceBroadcastReciever.class);
+		this.sendBroadcast(AlarmServiceIntent, null);
 	}
 }
