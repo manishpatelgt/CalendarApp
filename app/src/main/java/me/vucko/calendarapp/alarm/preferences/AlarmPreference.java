@@ -23,6 +23,7 @@ public class AlarmPreference {
 		ALARM_VIBRATE,
 		ALARM_DIFFICULTY,
 		ALARM_SNOOZE,
+		ALARM_SNOOZE_TIME,
 	}
 	
 	public enum Type{		
@@ -33,6 +34,7 @@ public class AlarmPreference {
 		MULTIPLE_LIST,
 		TIME,
 		SEEK_BAR,
+		NUMBER_PICKER,
 	}
 	
 	private Key key;

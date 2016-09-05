@@ -72,7 +72,7 @@ public class FirstFragment extends Fragment {
             Calendar today = Calendar.getInstance();
             today.setTime(d);
             today.set(Calendar.HOUR_OF_DAY, sharedPreferences.getInt("notificationTimePicker", 0) / 60);
-            today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60 - 1);
+            today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60);
             today.set(Calendar.SECOND, 0);
             today.set(Calendar.MILLISECOND, 0);
 

@@ -42,15 +42,18 @@ public class AlarmAlertBroadcastReciever extends BroadcastReceiver {
 		context.sendBroadcast(mathAlarmServiceIntent, null);
 
         Log.i("onReceive", "BRTTTT USAO sam ovde i sad cemo vidit ocu li zvonit");
+
+        Bundle bundle = intent.getExtras();
+        final Alarm alarm = (Alarm) bundle.getSerializable("alarm");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        if (sharedPreferences.getBoolean("nijeAlarm", false)) {
+        if (alarm == null) {
             EventBus.getDefault().post(new SyncEvents());
 
             Date d = new Date();
             Calendar today = Calendar.getInstance();
             today.setTime(d);
             today.set(Calendar.HOUR_OF_DAY, sharedPreferences.getInt("notificationTimePicker", 0) / 60);
-            today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60 - 1);
+            today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60);
             today.set(Calendar.SECOND, 0);
             today.set(Calendar.MILLISECOND, 0);
             today.add(Calendar.MILLISECOND, MILLISECONDS_IN_DAY);
@@ -67,8 +70,6 @@ public class AlarmAlertBroadcastReciever extends BroadcastReceiver {
             int time = sharedPreferences.getInt("eventsBeforeTimePicker", 0);
             if (sharedPreferences.getBoolean("eventsBeforeCheckbox", false) && shouldSoundTheAlarm(time, Calendar.getInstance())) {
                 StaticWakeLock.lockOn(context);
-                Bundle bundle = intent.getExtras();
-                final Alarm alarm = (Alarm) bundle.getSerializable("alarm");
 
                 Intent mathAlarmAlertActivityIntent;
 

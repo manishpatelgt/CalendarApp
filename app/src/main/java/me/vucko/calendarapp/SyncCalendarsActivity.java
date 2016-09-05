@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -371,6 +372,12 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
             if (output != null && output.size() != 0) {
                 Database.init(getApplicationContext());
                 List<Alarm> alarms = Database.getAll();
+                for (Alarm alarm: alarms) {
+                    if (alarm.getEvent() || alarm.getAlarmEventTime() != null) {
+                        Database.deleteEntry(alarm);
+                        alarms.remove(alarm);
+                    }
+                }
                 for (int i = 0; i < output.size(); i++) {
                     DateFormat df = new SimpleDateFormat("(yyyy-MM-dd'T'HH:mm:ss.SSSZ)", Locale.getDefault());
 
@@ -387,36 +394,28 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                         continue;
                     }
 
-                    boolean exist = false;
-                    for(int j = 0; j < alarms.size(); j++) {
-                        if ((alarms.get(j).getAlarmName().equals(name)) && (alarms.get(j).getAlarmEventTime().getTimeInMillis() == eventCalendar.getTimeInMillis())) {
-                            exist = true;
-                        }
+                    Alarm alarm = new Alarm();
+                    alarm.setEvent(true);
+                    alarm.setOneTime(true);
+                    alarm.setAlarmName(name);
+                    alarm.setAlarmEventTime(eventCalendar);
+                    Database.create(alarm);
+
+                    eventCalendar.add(java.util.Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicked", 0) * (-1));
+                    int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
+                    if (!sharedPreferences.getBoolean("eventsBeforeCheckbox", false) ||
+                            (eventCalendar.get(Calendar.HOUR_OF_DAY) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) < excludeAlarmsBeforeTimePicker) {
+                        continue;
                     }
-                    if (!exist) {
-                        Alarm alarm = new Alarm();
-                        alarm.setEvent(true);
-                        alarm.setOneTime(true);
-                        alarm.setAlarmName(name);
-                        alarm.setAlarmEventTime(eventCalendar);
-                        Database.create(alarm);
 
-                        eventCalendar.add(java.util.Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicked", 0) * (-1));
-                        int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
-                        if (!sharedPreferences.getBoolean("eventsBeforeCheckbox", false) ||
-                                (eventCalendar.get(Calendar.HOUR_OF_DAY) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) < excludeAlarmsBeforeTimePicker) {
-                            continue;
-                        }
+                    Alarm alarm1 = new Alarm();
+                    alarm1.setAlarmName(name);
+                    alarm1.setOneTime(true);
+                    alarm1.setAlarmTime(eventCalendar);
+                    alarm1.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
+                    Database.create(alarm1);
 
-                        Alarm alarm1 = new Alarm();
-                        alarm1.setAlarmName(name);
-                        alarm1.setOneTime(true);
-                        alarm1.setAlarmTime(eventCalendar);
-                        alarm1.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
-                        Database.create(alarm1);
-
-                        newAlarmAdded = true;
-                    }
+                    newAlarmAdded = true;
                 }
                 EventBus.getDefault().post(new AlarmChangeEvent());
                 if (newAlarmAdded) {

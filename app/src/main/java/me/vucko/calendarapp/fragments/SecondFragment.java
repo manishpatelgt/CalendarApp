@@ -99,8 +99,8 @@ public class SecondFragment extends Fragment {
         List<Alarm> calendarAlarmsD6 = new ArrayList<>();
 
         for (int i = 0; i < alarms.size(); i++) {
-            long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
             if (alarms.get(i).getEvent()) {
+                long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
                 CalendarEvent calendarEvent = new CalendarEvent(alarms.get(i).getAlarmName(), alarms.get(i).getAlarmEventTime());
                 if ((calendarD.getTimeInMillis() < eventMillis) && (eventMillis < calendarD1.getTimeInMillis()))
                     calendarEventsD.add(calendarEvent);
@@ -239,8 +239,8 @@ public class SecondFragment extends Fragment {
         List<Alarm> calendarAlarmsD6 = new ArrayList<>();
 
         for (int i = 0; i < alarms.size(); i++) {
-            long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
             if (alarms.get(i).getEvent()) {
+                long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
                 CalendarEvent calendarEvent = new CalendarEvent(alarms.get(i).getAlarmName(), alarms.get(i).getAlarmEventTime());
                 if ((calendarD.getTimeInMillis() < eventMillis) && (eventMillis < calendarD1.getTimeInMillis()))
                     calendarEventsD.add(calendarEvent);

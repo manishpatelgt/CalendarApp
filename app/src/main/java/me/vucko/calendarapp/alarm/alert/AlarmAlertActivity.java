@@ -19,12 +19,14 @@ import me.vucko.calendarapp.alarm.service.AlarmServiceBroadcastReciever;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -35,6 +37,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Calendar;
 
 public class AlarmAlertActivity extends Activity implements OnClickListener {
 
@@ -86,6 +90,12 @@ public class AlarmAlertActivity extends Activity implements OnClickListener {
 		}
 
 		((Button) findViewById(R.id.Button)).setOnClickListener(this);
+
+		Button snooze = (Button) findViewById(R.id.snooze);
+		if (!alarm.getSnooze()) {
+			snooze.setVisibility(View.GONE);
+		}
+		snooze.setOnClickListener(this);
 
 		TelephonyManager telephonyManager = (TelephonyManager) this
 				.getSystemService(Context.TELEPHONY_SERVICE);
@@ -146,7 +156,7 @@ public class AlarmAlertActivity extends Activity implements OnClickListener {
 				vibrator.vibrate(pattern, 0);
 			}
 			try {
-				mediaPlayer.setVolume(alarm.getVolume() * 0.01f, alarm.getVolume() * 0.01f);
+				mediaPlayer.setVolume(0f, 0f);
 				mediaPlayer.setDataSource(this,
 						Uri.parse(alarm.getAlarmTonePath()));
 				mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
@@ -207,6 +217,25 @@ public class AlarmAlertActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		String button = (String) v.getTag();
+		if (button.equalsIgnoreCase("snooze")) {
+			if (alarm.getAlarmEventTime() == null) {
+				Calendar calendar = alarm.getAlarmTime();
+				calendar.add(Calendar.MINUTE, alarm.getSnoozeTime());
+				alarm.setAlarmTime(calendar);
+			} else {
+				Calendar calendar = alarm.getAlarmEventTime();
+				calendar.add(Calendar.MINUTE, alarm.getSnoozeTime());
+				alarm.setAlarmEventTime(calendar);
+			}
+			if (alarm.getOneTime()) {
+				Database.create(alarm);
+			} else {
+				Database.update(alarm);
+			}
+			callAlarmScheduleService();
+			Database.deleteEntry(alarm);
+		}
 		alarmActive = false;
 		if (vibrator != null)
 			vibrator.cancel();

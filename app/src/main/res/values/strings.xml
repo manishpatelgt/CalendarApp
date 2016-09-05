@@ -39,6 +39,7 @@
     <string name="_9">9</string>
     <string name="decimal_button_text">,</string>
     <string name="clear_button_text">Clear</string>
+    <string name="snooze_button_text">Snooze</string>
     <string name="minus_button_text">-</string>
 
 

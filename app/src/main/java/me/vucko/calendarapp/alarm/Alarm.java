@@ -91,8 +91,9 @@ public class Alarm implements Serializable {
 	private Difficulty difficulty = Difficulty.EASY;
 	private int volume = 50;
 	private Boolean event = false;
-	private Calendar alarmEventTime = Calendar.getInstance();
+	private Calendar alarmEventTime = null;
 	private Boolean oneTime = false;
+	private int snoozeTime = 5;
 	
 	public Alarm() {
 
@@ -250,6 +251,14 @@ public class Alarm implements Serializable {
 		this.snooze = snooze;
 	}
 
+	public int getSnoozeTime() {
+		return snoozeTime;
+	}
+
+	public void setSnoozeTime(int snoozeTime) {
+		this.snoozeTime = snoozeTime;
+	}
+
 	/**
 	 * @return the alarmTonePath
 	 */
@@ -325,6 +334,8 @@ public class Alarm implements Serializable {
 	public void setOneTime(Boolean oneTime) {
 		this.oneTime = oneTime;
 	}
+
+
 
 	public String getRepeatDaysString() {
 		StringBuilder daysStringBuilder = new StringBuilder();

@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
+import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Type;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmBooleanEditEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmSnoozeTimeEditEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmVolumeEditEvent;
 
 public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializable {
@@ -119,6 +121,7 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					EventBus.getDefault().post(new AlarmBooleanEditEvent(isChecked, alarmPreference.getKey()));
+
 				}
 			});
 			break;
@@ -146,6 +149,21 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 				}
 			});
 			break;
+			case NUMBER_PICKER:
+				if(null == convertView || convertView.getId() != R.id.snoozeNumberPicker)
+					convertView = layoutInflater.inflate(R.layout.snooze_number_picker, null);
+				final NumberPicker numberPicker = (NumberPicker) convertView.findViewById(R.id.snoozeNumberPicker);
+				numberPicker.setMaxValue(30);
+				numberPicker.setMinValue(0);
+				numberPicker.setEnabled(alarm.getSnooze());
+				numberPicker.setValue(alarm.getSnoozeTime());
+				numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+					@Override
+					public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+						EventBus.getDefault().post(new AlarmSnoozeTimeEditEvent(newVal, alarmPreference.getKey()));
+					}
+				});
+				break;
 
 		case INTEGER:
 		case STRING:
@@ -218,6 +236,8 @@ public class AlarmPreferenceListAdapter extends BaseAdapter implements Serializa
 		}
 
 		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_SNOOZE,"Snooze", null, null, alarm.getSnooze(), Type.BOOLEAN));
+
+		preferences.add(new AlarmPreference(AlarmPreference.Key.ALARM_SNOOZE_TIME, "Snooze time", null, null, alarm.getSnoozeTime(), Type.NUMBER_PICKER));
 	}
 	
 	public Context getContext() {

@@ -50,6 +50,7 @@ import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.alarm.preferences.AlarmPreference.Key;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmBooleanEditEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
+import me.vucko.calendarapp.domain.eventbus_events.AlarmSnoozeTimeEditEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmVolumeEditEvent;
 
 public class AlarmPreferencesActivity extends BaseActivity {
@@ -403,5 +404,10 @@ public class AlarmPreferencesActivity extends BaseActivity {
 	@Subscribe
 	public void onAlarmVolumeEditEvent(AlarmVolumeEditEvent alarmVolumeEditEvent) {
 		alarm.setVolume(alarmVolumeEditEvent.getVolume());
+	}
+
+	@Subscribe
+	public void onAlarmSnoozeTimeEditEvent(AlarmSnoozeTimeEditEvent alarmSnoozeTimeEditEvent) {
+		alarm.setSnoozeTime(alarmSnoozeTimeEditEvent.getTime());
 	}
 }
