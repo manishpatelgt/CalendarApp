@@ -30,6 +30,7 @@ import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.domain.CalendarDay;
 import me.vucko.calendarapp.domain.CalendarEvent;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
+import me.vucko.calendarapp.domain.eventbus_events.SyncEvent;
 
 
 public class SecondFragment extends Fragment {

@@ -49,9 +49,10 @@
 
         <service
             android:name=".alarm.service.AlarmService"
+            android:enabled="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:process="za.co.neilson.alarm.serviceProcess" />
+            android:process="me.vucko.calendarapp.alarm.serviceProcess" />
 
         <receiver android:name=".alarm.service.AlarmServiceBroadcastReciever">
             <intent-filter>

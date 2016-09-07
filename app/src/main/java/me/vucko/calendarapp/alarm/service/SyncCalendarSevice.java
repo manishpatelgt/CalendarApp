@@ -1,11 +1,10 @@
-package me.vucko.calendarapp;
+package me.vucko.calendarapp.alarm.service;
 
 import android.Manifest;
-import android.accounts.AccountManager;
-import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,15 +13,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
+import android.os.IBinder;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -40,7 +35,6 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -52,17 +46,19 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import me.vucko.calendarapp.MainActivity;
+import me.vucko.calendarapp.R;
+import me.vucko.calendarapp.SyncCalendarsActivity;
 import me.vucko.calendarapp.alarm.Alarm;
 import me.vucko.calendarapp.alarm.database.Database;
 import me.vucko.calendarapp.domain.eventbus_events.AlarmChangeEvent;
-import me.vucko.calendarapp.domain.eventbus_events.SyncEvent;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class SyncCalendarsActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class SyncCalendarSevice extends Service {
 
     private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
-    public static GoogleAccountCredential mCredential;
+    GoogleAccountCredential mCredential;
     private ProgressDialog mProgress;
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
@@ -74,47 +70,12 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
     static final int MILLISECONDS_IN_WEEK = 1000 * 60 * 60 * 24 * 6;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate() {
+        super.onCreate();
 
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
+        mCredential = SyncCalendarsActivity.mCredential;
 
-        Intent intent = getIntent();
-        boolean sync = intent.getBooleanExtra("sync", false);
-        if (sync) {
-            getResultsFromApi();
-            this.finish();
-        } else {
-            setContentView(R.layout.activity_sync_calendars);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            assert toolbar != null;
-            toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha));
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                }
-            });
-            final Button syncCalendarButton = (Button) findViewById(R.id.syncCalendarButton);
-            assert syncCalendarButton != null;
-            syncCalendarButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    syncCalendarButton.setEnabled(false);
-                    getResultsFromApi();
-                    syncCalendarButton.setEnabled(true);
-                }
-            });
-
-
-            mProgress = new ProgressDialog(this);
-            mProgress.setMessage("Calling Google Calendar API ...");
-
-        }
+        getResultsFromApi();
     }
 
     private void getResultsFromApi() {
@@ -133,16 +94,14 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
     private void chooseAccount() {
         if (EasyPermissions.hasPermissions(
                 this, Manifest.permission.GET_ACCOUNTS)) {
-            String accountName = PreferenceManager.getDefaultSharedPreferences(this)
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            String accountName = preferences
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
                 getResultsFromApi();
-            } else {
-                // Start a dialog from which the user can choose an account
-                startActivityForResult(
-                        mCredential.newChooseAccountIntent(),
-                        REQUEST_ACCOUNT_PICKER);
             }
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
@@ -152,94 +111,6 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                     REQUEST_PERMISSION_GET_ACCOUNTS,
                     Manifest.permission.GET_ACCOUNTS);
         }
-    }
-
-    /**
-     * Called when an activity launched here (specifically, AccountPicker
-     * and authorization) exits, giving you the requestCode you started it with,
-     * the resultCode it returned, and any additional data from it.
-     * @param requestCode code indicating which activity result is incoming.
-     * @param resultCode code indicating the result of the incoming
-     *     activity result.
-     * @param data Intent (containing result data) returned by incoming
-     *     activity result.
-     */
-    @Override
-    protected void onActivityResult(
-            int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case REQUEST_GOOGLE_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) {
-//                    mOutputText.setText(
-//                            "This app requires Google Play Services. Please install " +
-//                                    "Google Play Services on your device and relaunch this app.");
-                } else {
-                    getResultsFromApi();
-                }
-                break;
-            case REQUEST_ACCOUNT_PICKER:
-                if (resultCode == RESULT_OK && data != null &&
-                        data.getExtras() != null) {
-                    String accountName =
-                            data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                    if (accountName != null) {
-                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(PREF_ACCOUNT_NAME, accountName);
-                        editor.apply();
-                        mCredential.setSelectedAccountName(accountName);
-                        getResultsFromApi();
-                    }
-                }
-                break;
-            case REQUEST_AUTHORIZATION:
-                if (resultCode == RESULT_OK) {
-                    getResultsFromApi();
-                }
-                break;
-        }
-    }
-
-    /**
-     * Respond to requests for permissions at runtime for API 23 and above.
-     * @param requestCode The request code passed in
-     *     requestPermissions(android.app.Activity, String, int, String[])
-     * @param permissions The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions
-     *     which is either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(
-                requestCode, permissions, grantResults, this);
-    }
-
-    /**
-     * Callback for when a permission is granted using the EasyPermissions
-     * library.
-     * @param requestCode The request code associated with the requested
-     *         permission
-     * @param list The requested permission list. Never null.
-     */
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> list) {
-        // Do nothing.
-    }
-
-    /**
-     * Callback for when a permission is denied using the EasyPermissions
-     * library.
-     * @param requestCode The request code associated with the requested
-     *         permission
-     * @param list The requested permission list. Never null.
-     */
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> list) {
-        // Do nothing.
     }
 
     /**
@@ -275,26 +146,6 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                 GoogleApiAvailability.getInstance();
         final int connectionStatusCode =
                 apiAvailability.isGooglePlayServicesAvailable(this);
-        if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
-            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-        }
-    }
-
-
-    /**
-     * Display an error dialog showing that Google Play Services is missing
-     * or out of date.
-     * @param connectionStatusCode code describing the presence (or lack of)
-     *     Google Play Services on this device.
-     */
-    void showGooglePlayServicesAvailabilityErrorDialog(
-            final int connectionStatusCode) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        Dialog dialog = apiAvailability.getErrorDialog(
-                SyncCalendarsActivity.this,
-                connectionStatusCode,
-                REQUEST_GOOGLE_PLAY_SERVICES);
-        dialog.show();
     }
 
 
@@ -365,9 +216,7 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
         @Override
         protected void onPreExecute() {
 //            mOutputText.setText("");
-            if (mProgress != null ) {
-                mProgress.show();
-            }
+            mProgress.show();
         }
 
         @Override
@@ -375,17 +224,14 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             boolean newAlarmAdded = false;
-            if (mProgress != null ) {
-                mProgress.hide();
-            }
+            mProgress.hide();
             if (output != null && output.size() != 0) {
                 Database.init(getApplicationContext());
                 List<Alarm> alarms = Database.getAll();
-                int size = alarms.size();
-                for (int i = size - 1; i >= 0; i--) {
-                    if (alarms.get(i).getEvent() || alarms.get(i).getAlarmEventTime() != null || alarms.get(i).getOneTime()) {
-                        Database.deleteEntry(alarms.get(i));
-                        alarms.remove(i);
+                for (Alarm alarm: alarms) {
+                    if (alarm.getEvent() || alarm.getAlarmEventTime() != null) {
+                        Database.deleteEntry(alarm);
+                        alarms.remove(alarm);
                     }
                 }
                 for (int i = 0; i < output.size(); i++) {
@@ -411,6 +257,7 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                     alarm.setAlarmEventTime(eventCalendar);
                     Database.create(alarm);
 
+                    eventCalendar.add(java.util.Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicked", 0) * (-1));
                     int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
                     if (!sharedPreferences.getBoolean("eventsBeforeCheckbox", false) ||
                             (eventCalendar.get(Calendar.HOUR_OF_DAY) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) < excludeAlarmsBeforeTimePicker) {
@@ -420,7 +267,6 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                     Alarm alarm1 = new Alarm();
                     alarm1.setAlarmName(name);
                     alarm1.setOneTime(true);
-                    eventCalendar.add(Calendar.MINUTE, -sharedPreferences.getInt("eventsBeforeFirstAlarmByTimePicker", 0));
                     alarm1.setAlarmTime(eventCalendar);
                     alarm1.setDays(convert(eventCalendar.get(java.util.Calendar.DAY_OF_WEEK)));
                     Database.create(alarm1);
@@ -436,18 +282,10 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
 
         @Override
         protected void onCancelled() {
-            if (mProgress != null ) {
-                mProgress.hide();
-            }
+            mProgress.hide();
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-                    showGooglePlayServicesAvailabilityErrorDialog(
-                            ((GooglePlayServicesAvailabilityIOException) mLastError)
-                                    .getConnectionStatusCode());
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
-                    startActivityForResult(
-                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            REQUEST_AUTHORIZATION);
                 } else {
 //                    mOutputText.setText("The following error occurred:\n"
 //                            + mLastError.getMessage());
@@ -492,8 +330,9 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
         }
     }
 
+    @Nullable
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }

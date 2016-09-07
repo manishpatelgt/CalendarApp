@@ -1,4 +1,6 @@
 package me.vucko.calendarapp.domain.eventbus_events;
 
-public class SyncEvents {
+public class SyncEvent {
+    public SyncEvent() {
+    }
 }

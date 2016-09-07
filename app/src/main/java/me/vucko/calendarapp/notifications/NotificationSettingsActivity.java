@@ -1,5 +1,9 @@
 package me.vucko.calendarapp.notifications;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,9 +17,16 @@ import android.widget.TimePicker;
 
 import com.shawnlin.numberpicker.NumberPicker;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import me.vucko.calendarapp.R;
+import me.vucko.calendarapp.alarm.Alarm;
+import me.vucko.calendarapp.alarm.alert.AlarmAlertBroadcastReciever;
 
 public class NotificationSettingsActivity extends AppCompatActivity {
+
+    private static final int MILLISECONDS_IN_DAY = 60*60*24*1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +36,7 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final TimePicker notificationTimePicked = (TimePicker) findViewById(R.id.notificationTimePicker);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         final SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (notificationTimePicked != null) {
@@ -37,6 +48,35 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                     int minutes = notificationTimePicked.getCurrentHour() * 60 + notificationTimePicked.getCurrentMinute();
                     editor.putInt("notificationTimePicker", minutes);
                     editor.apply();
+
+                    Intent myIntent = new Intent(getApplicationContext(), AlarmAlertBroadcastReciever.class);
+                    myIntent.putExtra("nijeAlarm", true);
+
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, myIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+                    AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+                    alarmManager.cancel(pendingIntent);
+
+                    Date d = new Date();
+                    Calendar today = Calendar.getInstance();
+                    today.setTime(d);
+                    today.set(Calendar.HOUR_OF_DAY, sharedPreferences.getInt("notificationTimePicker", 0) / 60);
+                    today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60);
+                    today.set(Calendar.SECOND, 0);
+                    today.set(Calendar.MILLISECOND, 0);
+                    Calendar now = Calendar.getInstance();
+                    if ((now.get(Calendar.HOUR_OF_DAY) > hourOfDay) || ((now.get(Calendar.HOUR_OF_DAY) == hourOfDay) && (now.get(Calendar.MINUTE) > minute))) {
+                        today.add(Calendar.MILLISECOND, MILLISECONDS_IN_DAY);
+                    }
+
+                    myIntent = new Intent(getApplicationContext(), AlarmAlertBroadcastReciever.class);
+                    myIntent.putExtra("nijeAlarm", true);
+
+                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, myIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, today.getTimeInMillis(), pendingIntent);
                 }
             });
         }

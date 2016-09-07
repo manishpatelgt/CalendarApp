@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,8 +59,9 @@ public class FirstFragment extends Fragment {
         Database.getDatabase();
         final List<Alarm> alarms = Database.getAll();
         int size = alarms.size();
+        Calendar calendar = Calendar.getInstance();
         for (int i = size - 1; i >= 0; i--) {
-            if (alarms.get(i).getEvent()) {
+            if (alarms.get(i).getEvent() || (!Arrays.asList(alarms.get(i).getDays()).contains(convert(calendar.get(java.util.Calendar.DAY_OF_WEEK))))) {
                 alarms.remove(i);
             }
         }
@@ -71,7 +73,7 @@ public class FirstFragment extends Fragment {
             Date d = new Date();
             Calendar today = Calendar.getInstance();
             today.setTime(d);
-            today.set(Calendar.HOUR_OF_DAY, sharedPreferences.getInt("notificationTimePicker", 0) / 60);
+            today.set(Calendar.HOUR_OF_DAY, sharedPreferences.getInt("caficationTimePicker", 0) / 60);
             today.set(Calendar.MINUTE, sharedPreferences.getInt("notificationTimePicker", 0) % 60);
             today.set(Calendar.SECOND, 0);
             today.set(Calendar.MILLISECOND, 0);
@@ -192,10 +194,11 @@ public class FirstFragment extends Fragment {
                 Database.init(getActivity());
                 List<Alarm> alarms = Database.getAll();
                 int size = alarms.size();
+                Calendar calendar = Calendar.getInstance();
                 for (int i = size - 1; i >= 0; i--) {
-                    if (alarms.get(i).getEvent()) {
-                        alarms.remove(i);
-                    }
+                        if (alarms.get(i).getEvent() || (!Arrays.asList(alarms.get(i).getDays()).contains(convert(calendar.get(java.util.Calendar.DAY_OF_WEEK))))) {
+                            alarms.remove(i);
+                        }
                 }
                 alarmsAdapter.setAlarms(alarms);
 
@@ -248,6 +251,18 @@ public class FirstFragment extends Fragment {
             default:
                 return new Alarm.Day[]{Alarm.Day.SATURDAY};
 
+        }
+    }
+
+    private Alarm.Day convert(int day) {
+        switch (day) {
+            case 1 : return Alarm.Day.SUNDAY;
+            case 2 : return Alarm.Day.MONDAY;
+            case 3 : return Alarm.Day.TUESDAY;
+            case 4 : return Alarm.Day.WEDNESDAY;
+            case 5 : return Alarm.Day.THURSDAY;
+            case 6 : return Alarm.Day.FRIDAY;
+            default : return Alarm.Day.SATURDAY;
         }
     }
 

@@ -156,7 +156,7 @@ public class AlarmAlertActivity extends Activity implements OnClickListener {
 				vibrator.vibrate(pattern, 0);
 			}
 			try {
-				mediaPlayer.setVolume(0f, 0f);
+				mediaPlayer.setVolume(alarm.getVolume() * 0.01f, alarm.getVolume() * 0.01f);
 				mediaPlayer.setDataSource(this,
 						Uri.parse(alarm.getAlarmTonePath()));
 				mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);

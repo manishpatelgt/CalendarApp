@@ -87,8 +87,8 @@ public class DetailedDayActivity extends AppCompatActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aaa", Locale.getDefault());
 
         for (int i = 0; i < alarms.size(); i++) {
-            long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
             if (alarms.get(i).getEvent()) {
+                long eventMillis = alarms.get(i).getAlarmEventTime().getTimeInMillis();
                 if ((startCalendar.getTimeInMillis() < eventMillis) && (eventMillis < endCalendar.getTimeInMillis())) {
                     j++;
                     if ((j == 1) && (event1 != null)) {
@@ -124,7 +124,7 @@ public class DetailedDayActivity extends AppCompatActivity {
             case 1 : return Alarm.Day.SUNDAY;
             case 2 : return Alarm.Day.MONDAY;
             case 3 : return Alarm.Day.TUESDAY;
-            case 4 : return Alarm.Day.MONDAY;
+            case 4 : return Alarm.Day.WEDNESDAY;
             case 5 : return Alarm.Day.THURSDAY;
             case 6 : return Alarm.Day.FRIDAY;
             default : return Alarm.Day.SATURDAY;
