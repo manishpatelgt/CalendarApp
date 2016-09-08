@@ -15,6 +15,7 @@
     <string name="no_alarms">No alarms have been set</string>
     <string name="vibrate">Vibrate</string>
     <string name="snooze">Snooze</string>
+    <string name="snoozeFor">Snooze for</string>
 
     <string name="button_new">New</string>
 
