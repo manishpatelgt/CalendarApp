@@ -325,7 +325,7 @@ public class AlarmAlertBroadcastReciever extends BroadcastReceiver {
                     Database.create(alarm);
 
                     int excludeAlarmsBeforeTimePicker = sharedPreferences.getInt("excludeAlarmsBeforeTimePicker", 540);
-                    if (!sharedPreferences.getBoolean("eventsBeforeCheckbox", false) ||
+                    if (sharedPreferences.getBoolean("eventsBeforeCheckbox", false) &&
                             (eventCalendar.get(Calendar.HOUR_OF_DAY) * 60 + eventCalendar.get(java.util.Calendar.MINUTE)) < excludeAlarmsBeforeTimePicker) {
                         continue;
                     }
