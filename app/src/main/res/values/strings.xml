@@ -61,7 +61,7 @@
     <string name="editEventAlarm">Edit Event Alarm</string>
     <string name="thisDayOnly">(this day only)</string>
     <string name="syncCalendars">Sync Calendar(s)</string>
-    <string name="availableCalendars">Available Calendars</string>
+    <string name="choseAccount">Chose Account</string>
     <string name="googleCalendar">Google Calendar</string>
     <string name="am">AM</string>
     <string name="m">M</string>

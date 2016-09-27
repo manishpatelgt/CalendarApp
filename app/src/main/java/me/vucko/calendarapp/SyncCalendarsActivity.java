@@ -100,6 +100,14 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                 }
             });
             final Button syncCalendarButton = (Button) findViewById(R.id.syncCalendarButton);
+            final Button choseAccountButton = (Button) findViewById(R.id.choseAccountButton);
+            assert choseAccountButton != null;
+            choseAccountButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chooseAccount(true);
+                }
+            });
             assert syncCalendarButton != null;
             syncCalendarButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,7 +129,7 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
         if (! isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
-            chooseAccount();
+            chooseAccount(false);
         } else if (! isDeviceOnline()) {
 //            mOutputText.setText("No network connection available.");
         } else {
@@ -130,12 +138,12 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
     }
 
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    private void chooseAccount() {
+    private void chooseAccount(boolean ind) {
         if (EasyPermissions.hasPermissions(
                 this, Manifest.permission.GET_ACCOUNTS)) {
             String accountName = PreferenceManager.getDefaultSharedPreferences(this)
                     .getString(PREF_ACCOUNT_NAME, null);
-            if (accountName != null) {
+            if ((accountName != null) && (!ind)) {
                 mCredential.setSelectedAccountName(accountName);
                 getResultsFromApi();
             } else {
