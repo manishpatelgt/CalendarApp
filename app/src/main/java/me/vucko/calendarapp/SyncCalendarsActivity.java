@@ -196,6 +196,8 @@ public class SyncCalendarsActivity extends AppCompatActivity implements EasyPerm
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
+                        Database.init(this);
+                        Database.deleteAll();
                         mCredential.setSelectedAccountName(accountName);
                         getResultsFromApi();
                     }
